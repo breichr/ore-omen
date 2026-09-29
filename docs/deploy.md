@@ -13,7 +13,7 @@ Stand M0. Noch keine Domain festgelegt (`08-technik.md`, „Entschieden“). Die
 | `worker` | `backend/Dockerfile` | `python -m app.worker`, startet erst, wenn `api` gesund ist |
 | `frontend` | `frontend/Dockerfile` | Caddy liefert die PWA aus und leitet `/api/*` an `api:8000` weiter |
 
-Nach außen ist nur `frontend` (Port 80 im Container) sichtbar. PWA und API laufen unter derselben Origin, deshalb braucht das Session-Cookie kein CORS.
+Nach außen ist nur `frontend` (Port 80 im Container, über den Coolify-Proxy) sichtbar. PWA und API laufen unter derselben Origin, deshalb braucht das Session-Cookie kein CORS.
 
 ## Einrichten in Coolify
 
@@ -22,7 +22,7 @@ Nach außen ist nur `frontend` (Port 80 im Container) sichtbar. PWA und API lauf
    - `POSTGRES_PASSWORD`: langes Zufallspasswort
    - `OO_COOKIE_SECURE=true` (Standard)
    - `POSTGRES_USER` und `POSTGRES_DB` können auf dem Standard bleiben
-3. **Domain** beim Dienst `frontend` eintragen (z. B. `https://spiel.example.com`), Port `80`. Coolify holt das TLS-Zertifikat. Den `ports`-Eintrag braucht Coolify nicht, er stört aber auch nicht.
+3. **Domain** beim Dienst `frontend` eintragen (z. B. `https://spiel.example.com:80`, also Domain plus Container-Port `80`). Coolify leitet über seinen Proxy weiter und holt das TLS-Zertifikat. `docker-compose.yml` veröffentlicht bewusst **keinen** Host-Port: Ein fester Port wie 8080 kollidiert mit anderen Anwendungen auf dem Server (`Bind for 0.0.0.0:8080 failed: port is already allocated`). Den Port für lokale Läufe setzt `docker-compose.override.yml`, das Coolify nicht lädt.
 4. **Deploy**. Danach prüfen:
    - `https://<domain>/api/health` → `{"status":"ok","db":"ok"}`
    - Startseite öffnet den Login, auf dem Handy erscheint „App installieren“ (Android) bzw. der Hinweis „Zum Home-Bildschirm“ (iOS)
