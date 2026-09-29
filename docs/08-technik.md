@@ -64,12 +64,15 @@ Kein Echtzeit-Server. Alles Zeitgesteuerte ist ein **geplantes Ereignis** mit F�
 ```sql
 scheduled_events(
   id, due_at timestamptz, kind text, payload jsonb,
+  character_id,           -- gesetzt bei charakterbezogenen Ereignissen
   status text,            -- pending | done | failed
   created_at, processed_at
 )
 ```
 
 - Worker holt alle 5 s fällige Ereignisse mit `FOR UPDATE SKIP LOCKED` und verarbeitet sie in einer Transaktion
+- **Nachholen beim Lesen**: Jede Anfrage, die einen Charakter liest oder ändert, sperrt zuerst die Charakterzeile und verarbeitet dessen fällige Ereignisse in Fälligkeitsreihenfolge, jeweils zum Zeitpunkt `due_at` (nicht zum Verarbeitungszeitpunkt). Dadurch hängt kein Spielstand davon ab, wann der Worker läuft. Der Worker sperrt Charaktere mit `FOR UPDATE SKIP LOCKED` und nutzt denselben Code.
+- Ressourcen werden in Tausendsteln gespeichert (`amount_milli`), damit Produktion über kurze Zeiträume nicht verloren geht. Angezeigt wird abgerundet.
 - Beispiele: `build_complete`, `job_complete`, `travel_arrive`, `injury_end`, `daily_reset`, `corruption_daily`, `weekly_influence`, `whisper_event`
 - **Produktion** wird nicht getickt, sondern beim Lesen berechnet: `lager = min(kapazität, lager_bei_letzter_änderung + rate × Δt)`. Bei jeder Änderung (Bau, Überfall, Verbrauch) wird der Stand festgeschrieben.
 
@@ -89,8 +92,8 @@ character_skills(character_id, skill, points)
 duel_tactics(character_id, target_weights jsonb, move_weights jsonb)
 
 buildings(character_id, type, level, damaged bool)
-build_queue(id, character_id, type, target_level, started_at, finishes_at)
-resources(character_id, name, amount, updated_at)      -- Stand zum Zeitpunkt updated_at
+build_queue(id, character_id, type, target_level, cost jsonb, started_at, finishes_at)
+resources(character_id, name, amount_milli, updated_at) -- Stand zum Zeitpunkt updated_at
 
 reputation(character_id, faction, value)
 oaths(character_id, faction, sworn_at)

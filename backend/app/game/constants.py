@@ -48,6 +48,10 @@ CHARACTER_NAME_MIN_LEN: Final = 3
 CHARACTER_NAME_MAX_LEN: Final = 20
 
 START_LEVEL: Final = 1
+
+# Experience (docs/01-welt.md, "Erfahrung und Stufen")
+XP_BASE: Final = 100  # XP for level n → n+1 = 100 × n^1.5
+XP_EXPONENT: Final = 1.5
 START_REGION: Final = "hollow_creek"
 
 REGIONS: Final = (
@@ -316,3 +320,10 @@ DAILY_JOBS_PER_FACTION: Final = 3
 DAILY_JOB_MINUTES_MIN: Final = 15
 DAILY_JOB_MINUTES_MAX: Final = 120
 TRAIN_HEIST_DIFFICULTY_REDUCTION_PER_ROLE: Final = 5
+
+# Jobs (docs/07-auftraege.md, "Arbeiten") – job list lives in content/jobs.yaml
+JOBS_AT_ONCE: Final = 1
+JOB_YIELD_PER_LEVEL: Final = 0.10  # yield × (1 + 0.1 × (level − 1)); XP is not scaled
+
+# Resources are stored in thousandths so short production intervals are not lost
+RESOURCE_SCALE: Final = 1000

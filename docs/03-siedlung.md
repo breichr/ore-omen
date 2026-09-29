@@ -4,9 +4,11 @@ Jeder Spieler besitzt eine **Parzelle** am Stadtrand, die sich vom Zeltlager zum
 
 ## Bauwarteschlange
 
-- Anfangs 1 Bauplatz in der Warteschlange, ab Haupthaus Stufe 5 zwei
+- Anfangs 1 Bauplatz, ab Haupthaus Stufe 5 zwei. Ein Bauplatz ist ein **gleichzeitig laufender** Bau: Mit 2 Plätzen laufen 2 Bauten parallel, jeder mit eigenem Timer.
+- Jedes Gebäude kann nur einmal gleichzeitig im Bau sein.
+- Die Kosten werden beim Start bezahlt. Die Bauzeit richtet sich nach der Haupthaus-Stufe beim Start.
 - Keine Sofortfertigstellung gegen Echtgeld
-- Abbruch eines laufenden Baus erstattet 50 % der Kosten
+- Abbruch eines laufenden Baus erstattet 50 % der Kosten (Ressourcen gedeckelt durch das Lager)
 
 ## Grundformeln
 
@@ -102,3 +104,4 @@ Wie Verteidigung, zusätzlich **Schwarzerz = 5 × n** (linear).
 - **Brandschaden**: Ein Angreifer kann statt Beute ein Gebäude beschädigen (−1 Stufe wirksam, bis repariert). Wachturm senkt die Chance.
 - **Blutmond**: Ungeschützte Gebäude können über Nacht beschädigt werden. Salzkreis und Totenacker halten dagegen.
 - **Produktion** läuft auch, wenn der Spieler offline ist, bis das Lager voll ist.
+- **Lagergrenze**: gilt für alle Ressourcen (auch Schwarzerz) und für jeden Zugang (Produktion, Arbeiten, Erstattungen, später Beute und Aufträge). Was über die Grenze geht, verfällt; die UI warnt vorher. **Dollar sind nicht gedeckelt.**
