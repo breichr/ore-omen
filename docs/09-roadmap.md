@@ -63,6 +63,7 @@ Frag nach, bevor du offene Entscheidungen aus 08-technik.md selbst triffst.
 - [ ] Arbeiten: 3–5 einfache Jobs (Holz hacken, Vieh treiben …) als Timer
 - [ ] Charakterstufe und Erfahrung, Attributpunkte bei Stufenaufstieg
 - [ ] Frontend: Hof-Screen (Gebäudeliste, Stufen, Ausbau-Button mit Kosten und Zeit), Lageranzeige, Arbeitsliste, lokaler Countdown
+- [ ] Charaktererstellung: Benutzername als Charakternamen vorschlagen (vorausgefüllt, änderbar). Offen: Benutzernamen erlauben Ziffern und `_`, Charakternamen nicht – vorher klären, wie der Vorschlag angepasst wird (z. B. `_` → Leerzeichen, Ziffern entfernen) oder ob das Feld dann leer bleibt
 - [ ] Integrationstest: Bau starten → Zeit vorspulen → Worker verarbeitet → Stufe erhöht
 
 ### Abnahme
