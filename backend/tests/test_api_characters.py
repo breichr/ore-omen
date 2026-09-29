@@ -47,7 +47,7 @@ def test_name_unique_case_insensitive(client):
     register(client)
     client.post("/characters", json=ROSA)
     client.cookies.clear()
-    register(client, email="jack@example.com")
+    register(client, username="jack")
     r = client.post("/characters", json={**ROSA, "name": "  rOSA "})
     assert r.status_code == 409
     assert r.json()["detail"]["code"] == "name_taken"

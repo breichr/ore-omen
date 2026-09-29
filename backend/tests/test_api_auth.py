@@ -1,6 +1,18 @@
 from datetime import timedelta
 
+from app.services.credentials import normalize_recovery_key
 from tests.conftest import register
+
+
+def login(client, username="rosa", password="geheim123"):
+    return client.post("/auth/login", json={"username": username, "password": password})
+
+
+def recover(client, key, username="rosa", new_password="neuesPasswort"):
+    return client.post(
+        "/auth/recover",
+        json={"username": username, "recovery_key": key, "new_password": new_password},
+    )
 
 
 def test_health(client):
@@ -20,6 +32,13 @@ def test_register_sets_secure_httponly_cookie(client):
     assert "Max-Age=2592000" in cookie  # 30 days
 
 
+def test_register_returns_recovery_key_once(client):
+    key = register(client).json()["recovery_key"]
+    assert normalize_recovery_key(key) is not None
+    assert len(key) == 29  # 5 groups of 5 plus 4 hyphens
+    assert "recovery_key" not in client.get("/me").text
+
+
 def test_me_requires_login(client):
     r = client.get("/me")
     assert r.status_code == 401
@@ -27,25 +46,31 @@ def test_me_requires_login(client):
 
 
 def test_me_after_register(client):
-    register(client, email="Rosa@Example.com")
+    register(client, username="Rosa_1878")
     r = client.get("/me")
     assert r.status_code == 200
     body = r.json()
-    assert body["user"] == {"email": "rosa@example.com", "timezone": "Europe/Vienna"}
+    assert body["user"] == {"username": "Rosa_1878", "timezone": "Europe/Vienna"}
     assert body["character"] is None
 
 
-def test_register_duplicate_email_case_insensitive(client):
+def test_register_duplicate_username_case_insensitive(client):
     register(client)
     client.cookies.clear()
-    r = register(client, email="ROSA@example.com")
+    r = register(client, username="ROSA")
     assert r.status_code == 409
-    assert r.json()["detail"]["code"] == "email_taken"
+    assert r.json()["detail"]["code"] == "username_taken"
 
 
 def test_register_validation(client):
-    assert register(client, email="kein-email").status_code == 422
-    assert register(client, password="kurz").status_code == 422
+    for username, password, code in [
+        ("ro", "geheim123", "username_length"),
+        ("rosa mae", "geheim123", "username_chars"),
+        ("rosa", "kurz", "password_length"),
+    ]:
+        r = register(client, username=username, password=password)
+        assert r.status_code == 422
+        assert r.json()["detail"]["code"] == code
 
 
 def test_login_logout(client):
@@ -53,12 +78,11 @@ def test_login_logout(client):
     client.cookies.clear()
     assert client.get("/me").status_code == 401
 
-    r = client.post("/auth/login", json={"email": "rosa@example.com", "password": "falsch123"})
+    r = login(client, password="falsch123")
     assert r.status_code == 401
     assert r.json()["detail"]["code"] == "invalid_credentials"
 
-    r = client.post("/auth/login", json={"email": "rosa@example.com", "password": "geheim123"})
-    assert r.status_code == 200
+    assert login(client, username="ROSA").status_code == 200  # case-insensitive
     assert client.get("/me").status_code == 200
 
     old_token = client.cookies.get("oo_session")
@@ -70,9 +94,51 @@ def test_login_logout(client):
     assert client.get("/me", headers={"Cookie": f"oo_session={old_token}"}).status_code == 401
 
 
-def test_login_unknown_email(client):
-    r = client.post("/auth/login", json={"email": "niemand@example.com", "password": "geheim123"})
+def test_login_unknown_user(client):
+    r = login(client, username="niemand")
     assert r.status_code == 401
+
+
+def test_recover_resets_password_rotates_key_and_ends_sessions(client):
+    key = register(client).json()["recovery_key"]
+    other_device = client.cookies.get("oo_session")
+    client.cookies.clear()
+
+    # Typed by hand: lowercase, spaces instead of hyphens
+    r = recover(client, key.lower().replace("-", " "))
+    assert r.status_code == 200, r.text
+    new_key = r.json()["recovery_key"]
+    assert new_key != key
+    assert client.get("/me").status_code == 200  # logged in right away
+
+    # Old sessions are gone, old password and old key no longer work
+    assert client.get("/me", headers={"Cookie": f"oo_session={other_device}"}).status_code == 401
+    client.cookies.clear()
+    assert login(client).status_code == 401
+    assert login(client, password="neuesPasswort").status_code == 200
+    assert recover(client, key).status_code == 401
+    assert recover(client, new_key, new_password="nochEinPasswort").status_code == 200
+
+
+def test_recover_rejects_wrong_input(client):
+    key = register(client).json()["recovery_key"]
+    client.cookies.clear()
+    wrong = ("0" if key[0] != "0" else "1") + key[1:]
+    for username, k in [("rosa", wrong), ("niemand", key), ("rosa", "kaputt")]:
+        r = recover(client, k, username=username)
+        assert r.status_code == 401
+        assert r.json()["detail"]["code"] == "invalid_recovery"
+    r = recover(client, key, new_password="kurz")
+    assert r.status_code == 422
+    assert r.json()["detail"]["code"] == "password_length"
+    assert login(client).status_code == 200  # nothing changed
+
+
+def test_recover_rate_limit(client):
+    for _ in range(5):
+        recover(client, "x")
+    r = recover(client, "x")
+    assert r.status_code == 429
 
 
 def test_session_slides_and_expires(client, clock):
@@ -89,7 +155,29 @@ def test_session_slides_and_expires(client, clock):
 
 def test_login_rate_limit(client):
     for _ in range(10):
-        client.post("/auth/login", json={"email": "x@example.com", "password": "falsch"})
-    r = client.post("/auth/login", json={"email": "x@example.com", "password": "falsch"})
+        login(client, username="x", password="falsch")
+    r = login(client, username="x", password="falsch")
     assert r.status_code == 429
     assert r.json()["detail"]["code"] == "rate_limited"
+
+
+def test_rotate_recovery_key_when_logged_in(client):
+    old_key = register(client).json()["recovery_key"]
+    assert client.post("/auth/recovery-key", json={"password": "geheim123"}).status_code == 200
+    r = client.post("/auth/recovery-key", json={"password": "geheim123"})
+    new_key = r.json()["recovery_key"]
+    assert new_key != old_key
+    assert client.get("/me").status_code == 200  # session stays valid
+    client.cookies.clear()
+    assert recover(client, old_key).status_code == 401
+    assert recover(client, new_key).status_code == 200
+
+
+def test_rotate_recovery_key_needs_password_and_login(client):
+    assert client.post("/auth/recovery-key", json={"password": "geheim123"}).status_code == 401
+    key = register(client).json()["recovery_key"]
+    r = client.post("/auth/recovery-key", json={"password": "falsch123"})
+    assert r.status_code == 401
+    assert r.json()["detail"]["code"] == "invalid_password"
+    client.cookies.clear()
+    assert recover(client, key).status_code == 200  # old key still valid

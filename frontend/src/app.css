@@ -116,6 +116,12 @@ button {
 	min-height: 48px;
 }
 
+a.btn {
+	text-align: center;
+	text-decoration: none;
+	line-height: 1.6;
+}
+
 .btn:disabled {
 	opacity: 0.5;
 	cursor: default;

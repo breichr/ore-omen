@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { homeFor } from './guard';
 import type { Me } from './api';
 
-const user = { email: 'rosa@example.com', timezone: 'Europe/Vienna' };
+const user = { username: 'rosa', timezone: 'Europe/Vienna' };
 
 describe('homeFor', () => {
 	it('sends guests to login', () => {

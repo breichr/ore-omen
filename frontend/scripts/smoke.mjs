@@ -1,11 +1,12 @@
 // End-to-end smoke test of the M0 acceptance flow in a phone viewport:
-// register → create character → close → reopen → still logged in; offline shell.
+// landing → register (recovery key) → create character → close → reopen → still
+// logged in → offline shell → logout → recover password with the key.
 // Usage: BASE_URL=http://localhost:4173 node scripts/smoke.mjs [screenshot-dir]
 import { chromium } from 'playwright-core';
 
 const base = process.env.BASE_URL ?? 'http://localhost:4173';
 const shots = process.argv[2];
-const email = `smoke-${Date.now()}@example.com`;
+const username = `smoke_${Date.now()}`;
 const letters = () =>
 	Array.from({ length: 6 }, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join(
 		''
@@ -28,18 +29,26 @@ const expectUrl = async (path) => {
 };
 
 await page.goto(base);
-await expectUrl('/login');
-step('guest lands on /login');
-await shot('1-login');
+await page.getByRole('heading', { name: 'Ore & Omen' }).waitFor();
+if (new URL(page.url()).pathname !== '/') throw new Error('guest should see landing page');
+step('guest sees landing page');
+await shot('0-landing');
 
-await page.getByRole('link', { name: /einsteigen/i }).click();
+await page.getByRole('link', { name: 'Einsteigen' }).click();
 await expectUrl('/register');
-await page.getByLabel('E-Mail').fill(email);
+await page.getByLabel('Benutzername').fill(username);
 await page.getByLabel('Passwort').fill('geheim123');
 await shot('2-register');
 await page.getByRole('button', { name: 'Konto anlegen' }).click();
+const recoveryKey = (await page.getByTestId('recovery-key').textContent()).trim();
+if (!/^[0-9A-Z]{5}(-[0-9A-Z]{5}){4}$/.test(recoveryKey)) throw new Error(`key ${recoveryKey}`);
+await shot('2b-recovery-key');
+const cont = page.getByRole('button', { name: 'Weiter' });
+if (!(await cont.isDisabled())) throw new Error('continue must need confirmation');
+await page.getByLabel('Ich habe den Schlüssel sicher notiert.').check();
+await cont.click();
 await expectUrl('/create');
-step('registered, redirected to character creation');
+step('registered, recovery key shown once, redirected to character creation');
 
 await page.getByLabel('Name').fill(name);
 await page.getByText('Kopfgeldjäger').click();
@@ -85,6 +94,36 @@ await page2.goto(`${base}/yard`);
 await page2.getByRole('button', { name: 'Abmelden' }).click();
 await page2.waitForURL((u) => u.pathname === '/login');
 step('logout');
+
+// Forgot password: recover with the key, get a new one, land in the yard
+await page2.getByRole('link', { name: /Notfallschlüssel/ }).click();
+await page2.waitForURL((u) => u.pathname === '/recover');
+await page2.getByLabel('Benutzername').fill(username);
+await page2.getByLabel('Notfallschlüssel').fill(recoveryKey.toLowerCase());
+await page2.getByLabel('Neues Passwort').fill('neuesPasswort');
+await page2.getByRole('button', { name: 'Passwort setzen' }).click();
+const newKey = (await page2.getByTestId('recovery-key').textContent()).trim();
+if (newKey === recoveryKey) throw new Error('key must rotate');
+await page2.getByLabel('Ich habe den Schlüssel sicher notiert.').check();
+await page2.getByRole('button', { name: 'Weiter' }).click();
+await page2.waitForURL((u) => u.pathname === '/yard');
+step('password recovered with key, new key issued');
+
+// Settings: rotate the key while logged in (needs the current password)
+await page2.getByRole('link', { name: 'Einstellungen' }).click();
+await page2.waitForURL((u) => u.pathname === '/settings');
+await page2.getByLabel('Passwort').fill('falsch123');
+await page2.getByRole('button', { name: 'Neuen Schlüssel erzeugen' }).click();
+await page2.getByText('Das Passwort stimmt nicht.').waitFor();
+await page2.getByLabel('Passwort').fill('neuesPasswort');
+await page2.getByRole('button', { name: 'Neuen Schlüssel erzeugen' }).click();
+const rotatedKey = (await page2.getByTestId('recovery-key').textContent()).trim();
+if (rotatedKey === newKey) throw new Error('settings must issue a new key');
+if (shots) await page2.screenshot({ path: `${shots}/6-settings-key.png` });
+await page2.getByLabel('Ich habe den Schlüssel sicher notiert.').check();
+await page2.getByRole('button', { name: 'Weiter' }).click();
+await page2.getByRole('heading', { name: 'Einstellungen' }).waitFor();
+step('settings: wrong password rejected, new key issued');
 
 await browser.close();
 console.log('smoke test passed');

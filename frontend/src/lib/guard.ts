@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import { ApiError, getMe, type Me } from './api';
 
-export type Want = 'guest' | 'no-character' | 'character';
+export type Want = 'guest' | 'user' | 'no-character' | 'character';
 
 /** Where a given session state belongs. */
 export function homeFor(me: Me | null): string {
@@ -27,6 +27,7 @@ export async function guard(
 	}
 	const ok =
 		(want === 'guest' && !me) ||
+		(want === 'user' && me) ||
 		(want === 'no-character' && me && !me.character) ||
 		(want === 'character' && me?.character);
 	if (!ok) redirect(307, homeFor(me));

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Request, Response, status
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 from app.api.deps import (
     CurrentSessionDep,
@@ -13,21 +13,27 @@ from app.api.deps import (
 )
 from app.config import Settings
 from app.services import auth
+from app.services.credentials import CredentialError
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-PASSWORD_MIN = 8
-PASSWORD_MAX = 128
-
 
 class Credentials(BaseModel):
-    email: EmailStr = Field(max_length=254)
-    password: str = Field(min_length=PASSWORD_MIN, max_length=PASSWORD_MAX)
+    # Rules are checked in app/services/credentials.py to return stable codes
+    username: str = Field(max_length=64)
+    password: str = Field(max_length=256)
 
 
-class LoginCredentials(BaseModel):
-    email: str = Field(max_length=254)
-    password: str = Field(max_length=PASSWORD_MAX)
+class RecoverIn(BaseModel):
+    username: str = Field(max_length=64)
+    recovery_key: str = Field(max_length=64)
+    new_password: str = Field(max_length=256)
+
+
+class RecoveryKeyOut(BaseModel):
+    """Returned exactly once; the server only keeps a hash."""
+
+    recovery_key: str
 
 
 def _set_cookie(response: Response, token: str, settings: Settings) -> None:
@@ -54,33 +60,72 @@ def register(
     db: DbDep,
     settings: SettingsDep,
     now: NowDep,
-) -> dict:
+) -> RecoveryKeyOut:
     try:
-        user = auth.register(db, body.email, body.password)
-    except auth.EmailTaken:
-        raise api_error(status.HTTP_409_CONFLICT, "email_taken") from None
+        user, recovery_key = auth.register(db, body.username, body.password)
+    except CredentialError as e:
+        raise api_error(status.HTTP_422_UNPROCESSABLE_CONTENT, e.code) from None
+    except auth.UsernameTaken:
+        raise api_error(status.HTTP_409_CONFLICT, "username_taken") from None
     token = auth.create_session(db, user, now, settings, request.headers.get("user-agent"))
     db.commit()
     _set_cookie(response, token, settings)
-    return {"ok": True}
+    return RecoveryKeyOut(recovery_key=recovery_key)
 
 
 @router.post("/login", dependencies=[Depends(rate_limit("login", "rate_limit_login"))])
 def login(
-    body: LoginCredentials,
+    body: Credentials,
     request: Request,
     response: Response,
     db: DbDep,
     settings: SettingsDep,
     now: NowDep,
 ) -> dict:
-    user = auth.authenticate(db, body.email, body.password)
+    user = auth.authenticate(db, body.username, body.password)
     if user is None:
         raise api_error(status.HTTP_401_UNAUTHORIZED, "invalid_credentials")
     token = auth.create_session(db, user, now, settings, request.headers.get("user-agent"))
     db.commit()
     _set_cookie(response, token, settings)
     return {"ok": True}
+
+
+@router.post("/recover", dependencies=[Depends(rate_limit("recover", "rate_limit_recover"))])
+def recover(
+    body: RecoverIn,
+    request: Request,
+    response: Response,
+    db: DbDep,
+    settings: SettingsDep,
+    now: NowDep,
+) -> RecoveryKeyOut:
+    try:
+        user, new_key = auth.recover(db, body.username, body.recovery_key, body.new_password)
+    except CredentialError as e:
+        code = status.HTTP_401_UNAUTHORIZED if e.code == "invalid_recovery" else 422
+        raise api_error(code, e.code) from None
+    token = auth.create_session(db, user, now, settings, request.headers.get("user-agent"))
+    db.commit()
+    _set_cookie(response, token, settings)
+    return RecoveryKeyOut(recovery_key=new_key)
+
+
+class PasswordIn(BaseModel):
+    password: str = Field(max_length=256)
+
+
+@router.post(
+    "/recovery-key",
+    dependencies=[Depends(rate_limit("rekey", "rate_limit_recover"))],
+)
+def rotate_recovery_key(body: PasswordIn, current: CurrentSessionDep, db: DbDep) -> RecoveryKeyOut:
+    try:
+        new_key = auth.rotate_recovery_key(db, current.user, body.password)
+    except CredentialError as e:
+        raise api_error(status.HTTP_401_UNAUTHORIZED, e.code) from None
+    db.commit()
+    return RecoveryKeyOut(recovery_key=new_key)
 
 
 @router.post("/logout")

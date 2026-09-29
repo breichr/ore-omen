@@ -11,7 +11,7 @@ router = APIRouter(tags=["me"])
 
 
 class UserOut(BaseModel):
-    email: str
+    username: str
     timezone: str
 
 
@@ -25,7 +25,7 @@ class MeOut(BaseModel):
 def me(user: CurrentUserDep, db: DbDep, now: NowDep) -> MeOut:
     ch = characters.get_for_user(db, user)
     return MeOut(
-        user=UserOut(email=user.email, timezone=user.timezone),
+        user=UserOut(username=user.username, timezone=user.timezone),
         character=character_out(ch) if ch else None,
         server_time=now.isoformat(),
     )

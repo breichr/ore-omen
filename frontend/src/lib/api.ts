@@ -22,7 +22,7 @@ export type Character = {
 };
 
 export type Me = {
-	user: { email: string; timezone: string };
+	user: { username: string; timezone: string };
 	character: Character | null;
 	server_time: string;
 };
