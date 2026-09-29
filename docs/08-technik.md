@@ -79,7 +79,7 @@ scheduled_events(
 users(id, email, password_hash, timezone, created_at)
 sessions(id, user_id, token_hash, created_at, last_seen_at, expires_at,
          user_agent)                                     -- 30 Tage gleitend
-characters(id, user_id, name, class, level, xp,
+characters(id, user_id UNIQUE, name, name_key UNIQUE, class,   -- name_key: casefold(name) level, xp,
            strength, dexterity, intellect, charisma,
            unspent_attribute_points, unspent_skill_points,
            dollars, bank_dollars, corruption_tenths,
