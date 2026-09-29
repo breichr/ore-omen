@@ -33,6 +33,8 @@ Schätzungen sind Abende à ca. 3 h mit Claude Code, als grobe Orientierung.
 - [x] PWA: Manifest, Icons, Service Worker mit App-Shell-Cache, Offline-Hinweis
 - [x] CI: Tests + Lint bei jedem Push (`.github/workflows/ci.yml`)
 - [ ] Deployment auf Coolify – Anleitung in `docs/deploy.md`, hakt der Projektinhaber ab
+- [x] Login per Benutzername statt E-Mail, Notfall-Wiederherstellungsschlüssel für Passwort-Reset
+- [x] Kleine Landing Page für Gäste statt direktem Login
 
 ### Abnahme
 Auf dem Handy registrieren, Charakter anlegen, App installieren, schließen, wieder öffnen → noch eingeloggt.
@@ -201,4 +203,6 @@ Zwei Wochen Beta ohne Datenverlust. Mindestens 60 % der Tester schließen das On
 - **Balancing-CI (M3)**: Mit `duel_sim.py --seed 1 -n 2000 klassen` liegt der Kopfgeldjäger bei **42,9 %**, also schon unter dem CI-Korridor 43–57 %. Vor M3 entscheiden: mehr Duelle je Paar (z. B. 10.000), Kopfgeldjäger nachbalancieren oder Korridor für ihn anpassen.
 - **Skillpunkte verteilen (M1/M3)**: Neue Charaktere haben 5 unverteilte Skillpunkte. Verteilung und `character_skills` kommen mit der Stufenlogik in M1 oder mit M3. Welcher Meilenstein?
 - **Rate-Limit** liegt im Speicher des API-Prozesses (reicht für eine Instanz). Vor horizontaler Skalierung in Postgres verlegen.
+- **Notfallschlüssel neu erzeugen**: Derzeit gibt es einen neuen Schlüssel nur über die Wiederherstellung. Soll man ihn auch eingeloggt (mit Passwort) neu erzeugen können, z. B. in einem Einstellungs-Screen?
+- **Alt-Konten**: Konten aus der Zeit vor Migration 0002 heißen `user<ID>` und haben keinen Notfallschlüssel. Betrifft nur Testkonten.
 - **Onboarding vs. Startzustand**: Der Hof ist nach der Erstellung leer, das Zelt baut der Spieler in M1/M2 selbst (Onboarding-Schritt 3).

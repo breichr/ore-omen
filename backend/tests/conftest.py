@@ -76,5 +76,5 @@ def client(db_sessionmaker, clock):
         yield c
 
 
-def register(client, email="rosa@example.com", password="geheim123"):
-    return client.post("/auth/register", json={"email": email, "password": password})
+def register(client, username="rosa", password="geheim123"):
+    return client.post("/auth/register", json={"username": username, "password": password})

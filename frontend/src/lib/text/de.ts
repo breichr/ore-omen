@@ -14,6 +14,19 @@ export const de = {
 		page: 'Der Telegraf schweigt. Ohne Verbindung kommt keine Nachricht aus Hollow Creek.'
 	},
 
+	landing: {
+		intro:
+			'Hollow Creek, 1878. Unter der Stadt liegt ein schwarzes Erz, das Menschen Dinge können lässt, die sie nicht können sollten. Es verlangt einen Preis.',
+		points: [
+			'Bau deine Parzelle vom Zelt zum Gehöft.',
+			'Schließ dich einer von vier Fraktionen an – und mach dir die anderen zu Feinden.',
+			'Duelliere dich, jage Kopfgelder, oder werde selbst gejagt.',
+			'Wenige Minuten am Tag. Timer laufen weiter, während du weg bist.'
+		],
+		register: 'Einsteigen',
+		login: 'Ich bin schon in der Stadt'
+	},
+
 	install: {
 		button: 'App installieren',
 		iosHint: 'Zum Installieren: Teilen-Symbol antippen, dann „Zum Home-Bildschirm“.',
@@ -26,14 +39,36 @@ export const de = {
 		loginIntro: 'Der Bahnsteig ist leer. Jemand hat deinen Namen ins Gästebuch geschrieben.',
 		registerIntro:
 			'Der letzte Zug, der noch fährt. Der Schaffner nimmt dein Ticket und sieht dich zu lange an.',
-		email: 'E-Mail',
+		username: 'Benutzername',
+		usernameHint:
+			'3–20 Zeichen: Buchstaben, Ziffern, _ und -. Nur zum Anmelden, nicht dein Charaktername.',
 		password: 'Passwort',
 		passwordHint: 'Mindestens 8 Zeichen.',
 		login: 'Anmelden',
 		register: 'Konto anlegen',
 		logout: 'Abmelden',
 		toRegister: 'Noch kein Konto? Hier einsteigen.',
-		toLogin: 'Schon ein Konto? Anmelden.'
+		toLogin: 'Schon ein Konto? Anmelden.',
+		toRecover: 'Passwort vergessen? Mit Notfallschlüssel wiederherstellen.'
+	},
+
+	recovery: {
+		title: 'Wiederherstellen',
+		intro:
+			'Mit deinem Notfallschlüssel setzt du ein neues Passwort. Danach bekommst du einen neuen Schlüssel.',
+		key: 'Notfallschlüssel',
+		keyPlaceholder: 'XXXXX-XXXXX-XXXXX-XXXXX-XXXXX',
+		newPassword: 'Neues Passwort',
+		submit: 'Passwort setzen',
+		showTitle: 'Dein Notfallschlüssel',
+		showNewTitle: 'Dein neuer Notfallschlüssel',
+		showIntro:
+			'Schreib ihn auf oder speichere ihn im Passwort-Manager. Er wird nur dieses eine Mal angezeigt. Ohne ihn kann ein vergessenes Passwort nicht zurückgesetzt werden.',
+		showOldInvalid: 'Der alte Schlüssel gilt nicht mehr.',
+		copy: 'Kopieren',
+		copied: 'Kopiert',
+		confirm: 'Ich habe den Schlüssel sicher notiert.',
+		continue: 'Weiter'
 	},
 
 	create: {
@@ -103,8 +138,12 @@ export const de = {
 
 	errors: {
 		not_authenticated: 'Bitte melde dich an.',
-		invalid_credentials: 'E-Mail oder Passwort stimmt nicht.',
-		email_taken: 'Mit dieser E-Mail gibt es schon ein Konto.',
+		invalid_credentials: 'Benutzername oder Passwort stimmt nicht.',
+		username_taken: 'Dieser Benutzername ist schon vergeben.',
+		username_length: 'Der Benutzername muss 3 bis 20 Zeichen lang sein.',
+		username_chars: 'Erlaubt sind Buchstaben ohne Umlaute, Ziffern, _ und -.',
+		password_length: 'Das Passwort muss mindestens 8 Zeichen lang sein.',
+		invalid_recovery: 'Benutzername oder Notfallschlüssel stimmt nicht.',
 		rate_limited: 'Zu viele Versuche. Warte eine Minute.',
 		character_exists: 'Du hast bereits einen Charakter.',
 		name_taken: 'Diesen Namen trägt schon jemand in Hollow Creek.',

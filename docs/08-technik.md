@@ -76,7 +76,8 @@ scheduled_events(
 ## Datenmodell (Kern)
 
 ```
-users(id, email, password_hash, timezone, created_at)
+users(id, username, username_key UNIQUE, password_hash, recovery_key_hash,
+      timezone, created_at)                              -- username_key: lower(username)
 sessions(id, user_id, token_hash, created_at, last_seen_at, expires_at,
          user_agent)                                     -- 30 Tage gleitend
 characters(id, user_id UNIQUE, name, name_key UNIQUE, class,   -- name_key: casefold(name) level, xp,
@@ -135,10 +136,17 @@ Server gibt immer die **absoluten Endzeitpunkte** von Timern zurück, der Client
 
 ## Auth
 
-- Login mit E-Mail + Passwort. Für M0 ohne E-Mail-Bestätigung und ohne Passwort-Reset (kommt vor der Beta).
+- Login mit **Benutzername + Passwort**. Keine E-Mail-Adresse.
+  - Benutzername: 3–20 Zeichen, `A–Z a–z 0–9 _ -`; eindeutig ohne Beachtung der Groß-/Kleinschreibung. Unabhängig vom Charakternamen.
+  - Passwort: 8–128 Zeichen.
+- **Notfall-Wiederherstellungsschlüssel** statt Passwort-Reset per E-Mail:
+  - Wird bei der Registrierung serverseitig erzeugt und **genau einmal** angezeigt. Gespeichert wird nur der Argon2-Hash.
+  - Format: 25 Zeichen Crockford-Base32 in fünf Gruppen, z. B. `7K3QM-D9XHT-2VRPA-W8NCE-4FJ6B` (125 Bit). Eingabe ignoriert Groß-/Kleinschreibung, Leerzeichen und Bindestriche.
+  - Wiederherstellen: Benutzername + Schlüssel + neues Passwort. Danach ist der alte Schlüssel ungültig, ein neuer wird einmal angezeigt, alle bestehenden Sessions werden beendet.
+  - Wer Passwort und Schlüssel verliert, verliert das Konto (kein Support-Weg in M0).
 - Session-Cookie (HttpOnly, Secure, SameSite=Lax) mit zufälligem Token; in `sessions` wird nur der SHA-256-Hash gespeichert. Laufzeit **30 Tage gleitend**: jede Anfrage verlängert `expires_at`. Logout löscht die Session serverseitig.
 - Passwort-Hash mit Argon2
-- Rate-Limit auf Login und schreibende Endpunkte
+- Rate-Limit auf Login, Registrierung, Wiederherstellung und schreibende Endpunkte
 - Ein Charakter pro Account (Mehrfachaccounts in den Nutzungsbedingungen verbieten)
 - Charaktername: 3–20 Zeichen, Buchstaben inkl. Umlaute, Leerzeichen, Bindestrich, Apostroph; eindeutig ohne Beachtung der Groß-/Kleinschreibung
 

@@ -13,8 +13,11 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
-    email: Mapped[str] = mapped_column(String(254), unique=True)  # stored lowercased
+    username: Mapped[str] = mapped_column(String(20))
+    username_key: Mapped[str] = mapped_column(String(20), unique=True)  # lowercased
     password_hash: Mapped[str] = mapped_column(String(255))
+    # Argon2 hash of the emergency recovery key; shown to the player only once
+    recovery_key_hash: Mapped[str | None] = mapped_column(String(255))
     timezone: Mapped[str] = mapped_column(String(64), default=DEFAULT_USER_TIMEZONE)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     # Rate limits: requests per window per client IP
     rate_limit_login: int = 10
     rate_limit_register: int = 5
+    rate_limit_recover: int = 5
     rate_limit_write: int = 60
     rate_limit_window_seconds: int = 60
 
