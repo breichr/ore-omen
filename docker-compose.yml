@@ -1,5 +1,6 @@
 # Ore & Omen – full stack. Local: `docker compose up --build`, then http://localhost:8080
-# Production: see docs/deploy.md (Coolify).
+# (docker-compose.override.yml is picked up automatically and publishes the port).
+# Production: see docs/deploy.md (Coolify runs only this file, via -f).
 services:
   db:
     image: postgres:16-alpine
@@ -46,8 +47,11 @@ services:
 
   frontend:
     build: ./frontend
-    ports:
-      - "${WEB_PORT:-8080}:80"
+    # No host port here: Coolify routes the domain via its own proxy, and a
+    # fixed host port collides with other apps on the server. For local runs
+    # docker-compose.override.yml publishes the port.
+    expose:
+      - "80"
     depends_on:
       - api
     restart: unless-stopped

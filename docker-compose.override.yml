@@ -1,0 +1,6 @@
+# Local only. `docker compose up` loads this file automatically; Coolify runs
+# `docker compose -f docker-compose.yml` and ignores it.
+services:
+  frontend:
+    ports:
+      - "${WEB_PORT:-8080}:80"
