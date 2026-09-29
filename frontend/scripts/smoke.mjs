@@ -7,7 +7,9 @@ const base = process.env.BASE_URL ?? 'http://localhost:4173';
 const shots = process.argv[2];
 const email = `smoke-${Date.now()}@example.com`;
 const letters = () =>
-	Array.from({ length: 6 }, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('');
+	Array.from({ length: 6 }, () => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join(
+		''
+	);
 const name = `Rosa ${letters()}`; // names are unique; digits are not allowed
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
