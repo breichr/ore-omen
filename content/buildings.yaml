@@ -1,0 +1,141 @@
+# Gebäude und Basiswerte (docs/03-siedlung.md). Formeln: backend/app/game/buildings.py
+#
+# cost:        Basiskosten Stufe 1; Schlüssel sind Ressourcen-Codes, "dollars" = $
+# time_min:    Basiszeit Stufe 1 in Minuten
+# produces:    Basisrate pro Stunde je Ressource
+# produces_from_level: Ressource wird erst ab dieser Stufe produziert
+# black_ore_per_level: zusätzliche Kosten Schwarzerz = Wert × n (linear)
+# excludes:    darf nicht gebaut werden, solange dieses Gebäude steht
+#
+# Gemeinschaftsgebäude (Saloon, Bandenversteck, Förderturm) kommen mit den
+# Banden in Phase 2 und haben noch keine Basiswerte.
+
+buildings:
+  # --- Kern -----------------------------------------------------------------
+  main_house:
+    category: core
+    name: Haupthaus
+    description: Bestimmt die Höchststufe aller anderen Gebäude und beschleunigt den Bau.
+    cost: { wood: 100, iron: 50, dollars: 100 }
+    time_min: 20
+  storehouse:
+    category: core
+    name: Lagerschuppen
+    description: Mehr Platz für Vorräte und ein größerer geschützter Anteil.
+    cost: { wood: 80, iron: 20 }
+    time_min: 8
+
+  # --- Produktion -----------------------------------------------------------
+  lumber_yard:
+    category: production
+    name: Holzfällerplatz
+    description: Bäume werden zu Brettern.
+    cost: { wood: 50, dollars: 20 }
+    time_min: 5
+    produces: { wood: 20 }
+  cattle_pen:
+    category: production
+    name: Viehkoppel
+    description: Rinder für Handel und Kessel.
+    cost: { wood: 50, dollars: 20 }
+    time_min: 5
+    produces: { cattle: 20 }
+  distillery:
+    category: production
+    name: Brennerei
+    description: Whiskey für Handel und Tinkturen.
+    cost: { wood: 50, dollars: 20 }
+    time_min: 5
+    produces: { whiskey: 20 }
+  smithy:
+    category: production
+    name: Schmiede
+    description: Eisen, Hufeisen, Waffen, später Silbermunition.
+    cost: { wood: 80, dollars: 40 }
+    time_min: 10
+    produces: { iron: 10 }
+  dig_site:
+    category: production
+    name: Schürfstelle
+    description: Eisen und ein wenig Silber. Tiefer unten wartet etwas Schwarzes.
+    cost: { wood: 80, dollars: 40 }
+    time_min: 10
+    produces: { iron: 10, silver: 2, black_ore: 0.5 }
+    produces_from_level: { black_ore: 5 }
+
+  # --- Charakter & Klassen --------------------------------------------------
+  shooting_range:
+    category: character
+    name: Schießstand
+    description: Trainingszeit für Duellwerte −5 % pro Stufe.
+    cost: { wood: 120, iron: 60, dollars: 150 }
+    time_min: 15
+  apothecary:
+    category: character
+    name: Apotheke
+    description: Tinkturen und Heilung; Verletzungsdauer −5 % pro Stufe.
+    cost: { wood: 120, iron: 60, dollars: 150 }
+    time_min: 15
+  chapel:
+    category: character
+    name: Kapelle
+    description: Senkt die Verderbnis jeden Tag. Verträgt sich nicht mit dem Erzschrein.
+    cost: { wood: 120, iron: 60, dollars: 150 }
+    time_min: 15
+    excludes: [ore_shrine]
+  map_room:
+    category: character
+    name: Kartenzimmer
+    description: Reisezeiten −2 % pro Stufe, bessere Auftragsbelohnungen.
+    cost: { wood: 120, iron: 60, dollars: 150 }
+    time_min: 15
+
+  # --- Verteidigung ---------------------------------------------------------
+  palisade:
+    category: defense
+    name: Palisade
+    description: Grundverteidigung gegen Überfälle.
+    cost: { wood: 100, iron: 80 }
+    time_min: 12
+  watchtower:
+    category: defense
+    name: Wachturm
+    description: Frühwarnung. Angreifer sehen weniger, du siehst mehr.
+    cost: { wood: 100, iron: 80 }
+    time_min: 12
+  kennel:
+    category: defense
+    name: Hundezwinger
+    description: Gestohlene Menge −3 % pro Stufe.
+    cost: { wood: 100, iron: 80 }
+    time_min: 12
+  salt_circle:
+    category: defense
+    name: Salzkreis
+    description: Schutz gegen übernatürliche Angriffe.
+    cost: { wood: 100, iron: 80 }
+    time_min: 12
+
+  # --- Übernatürlich --------------------------------------------------------
+  ore_shrine:
+    category: supernatural
+    name: Erzschrein
+    description: Wandelt Schwarzerz in Kräfte. Verträgt sich nicht mit der Kapelle.
+    cost: { wood: 100, iron: 80 }
+    time_min: 12
+    black_ore_per_level: 5
+    excludes: [chapel]
+  boneyard:
+    category: supernatural
+    name: Totenacker
+    description: Gefallene Kreaturen halten Wache. Händler mögen das nicht.
+    cost: { wood: 100, iron: 80 }
+    time_min: 12
+    black_ore_per_level: 5
+  whisper_well:
+    category: supernatural
+    name: Flüsterbrunnen
+    description: Verrät ein Geheimnis eines anderen Spielers.
+    cost: { wood: 100, iron: 80 }
+    time_min: 12
+    black_ore_per_level: 5

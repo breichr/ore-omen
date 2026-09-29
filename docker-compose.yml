@@ -18,7 +18,9 @@ services:
     restart: unless-stopped
 
   api:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     environment:
       OO_ENV: ${OO_ENV:-production}
       OO_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ore}:${POSTGRES_PASSWORD:-ore}@db:5432/${POSTGRES_DB:-ore_omen}
@@ -35,7 +37,9 @@ services:
     restart: unless-stopped
 
   worker:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     command: ["python", "-m", "app.worker"]
     environment:
       OO_ENV: ${OO_ENV:-production}

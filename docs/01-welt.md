@@ -71,6 +71,21 @@ Erfolg, wenn W20 + Attribut + Skillpunkte ≥ Schwierigkeit
 
 Proben laufen immer auf ein Attribut und einen seiner Skills, nie direkt auf einen Duellwert. Schwierigkeiten in `07-auftraege.md`.
 
+## Erfahrung und Stufen
+
+```
+XP für den Aufstieg von Stufe n auf n+1 = 100 × n^1,5     (gerundet)
+```
+
+| Aufstieg | 1→2 | 2→3 | 3→4 | 4→5 | 5→6 | 9→10 |
+|---|---|---|---|---|---|---|
+| XP | 100 | 283 | 520 | 800 | 1.118 | 2.700 |
+
+- Stufe 10 bei 11.106 XP insgesamt. Vorerst keine Höchststufe.
+- Pro Aufstieg: **2 Attributpunkte** und **3 Skillpunkte**, frei verteilbar, jederzeit (auch später).
+- Ein Skill darf höchstens **Charakterstufe + 2** Punkte haben.
+- Quellen (M1): Arbeiten. Später Aufträge, Duelle.
+
 ## Klassen
 
 Wahl bei Charaktererstellung. Ab Stufe 25 zweite Klasse als Nebenklasse (halbe Boni, keine zweite Duellfähigkeit).

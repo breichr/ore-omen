@@ -53,20 +53,21 @@ Frag nach, bevor du offene Entscheidungen aus 08-technik.md selbst triffst.
 ## M1 – Siedlung & Zeit
 
 ### Aufgaben
-- [ ] `app/game/buildings.py`: reine Funktionen für Kosten, Bauzeit, Produktion, Lager, geschützter Anteil
-- [ ] Unit-Tests mit der Referenztabelle aus `03-siedlung.md` (Holzfällerplatz Stufe 1/3/5/7/10)
-- [ ] `content/buildings.yaml` mit allen Gebäuden und Basiswerten
-- [ ] Migration: `buildings`, `build_queue`, `resources`, `scheduled_events`
-- [ ] Ressourcen mit Lazy-Berechnung (Stand + Rate × Δt, gedeckelt durch Lager)
-- [ ] Worker: Schleife mit `FOR UPDATE SKIP LOCKED`, Handler-Registry nach `kind`
-- [ ] Bauen: Prüfungen (Haupthaus-Stufe, Ressourcen, Warteschlange, Ausschlussregeln), Abbruch mit 50 % Erstattung
-- [ ] Arbeiten: 3–5 einfache Jobs (Holz hacken, Vieh treiben …) als Timer
-- [ ] Charakterstufe und Erfahrung, Attributpunkte bei Stufenaufstieg
-- [ ] Frontend: Hof-Screen (Gebäudeliste, Stufen, Ausbau-Button mit Kosten und Zeit), Lageranzeige, Arbeitsliste, lokaler Countdown
-- [ ] Integrationstest: Bau starten → Zeit vorspulen → Worker verarbeitet → Stufe erhöht
+- [x] `app/game/buildings.py`: reine Funktionen für Kosten, Bauzeit, Produktion, Lager, geschützter Anteil
+- [x] Unit-Tests mit der Referenztabelle aus `03-siedlung.md` (Holzfällerplatz Stufe 1/3/5/7/10)
+- [x] `content/buildings.yaml` mit allen Gebäuden und Basiswerten
+- [x] Migration: `buildings`, `build_queue`, `resources`, `scheduled_events`
+- [x] Ressourcen mit Lazy-Berechnung (Stand + Rate × Δt, gedeckelt durch Lager)
+- [x] Worker: Schleife mit `FOR UPDATE SKIP LOCKED`, Handler-Registry nach `kind`
+- [x] Bauen: Prüfungen (Haupthaus-Stufe, Ressourcen, Warteschlange, Ausschlussregeln), Abbruch mit 50 % Erstattung
+- [x] Arbeiten: 3–5 einfache Jobs (Holz hacken, Vieh treiben …) als Timer
+- [x] Charakterstufe und Erfahrung, Attributpunkte bei Stufenaufstieg
+- [x] Frontend: Hof-Screen (Gebäudeliste, Stufen, Ausbau-Button mit Kosten und Zeit), Lageranzeige, Arbeitsliste, lokaler Countdown
+- [x] Charaktererstellung: Benutzername als Charakternamen vorschlagen (vorausgefüllt, änderbar). `_`/`-` → Leerzeichen, Ziffern entfernen, Wortanfänge groß; bleiben weniger als 3 Zeichen, bleibt das Feld leer
+- [x] Integrationstest: Bau starten → Zeit vorspulen → Worker verarbeitet → Stufe erhöht
 
 ### Abnahme
-Holzfällerplatz auf Stufe 3 ausbauen. Produktion und Bauzeit stimmen exakt mit der Referenztabelle. Lager läuft voll und stoppt. Kapelle und Erzschrein schließen sich aus.
+Holzfällerplatz auf Stufe 3 ausbauen. Produktion und Bauzeit stimmen exakt mit der Referenztabelle (Bauzeit: Referenztabelle ohne Haupthaus-Bonus in `test_buildings.py`; im Spiel gilt immer der Bonus, geprüft in `test_api_settlement.py`). Lager läuft voll und stoppt. Kapelle und Erzschrein schließen sich aus.
 
 ### Prompt
 ```
@@ -205,4 +206,5 @@ Zwei Wochen Beta ohne Datenverlust. Mindestens 60 % der Tester schließen das On
 - **Skillpunkte verteilen (M1/M3)**: Neue Charaktere haben 5 unverteilte Skillpunkte. Verteilung und `character_skills` kommen mit der Stufenlogik in M1 oder mit M3. Welcher Meilenstein?
 - **Rate-Limit** liegt im Speicher des API-Prozesses (reicht für eine Instanz). Vor horizontaler Skalierung in Postgres verlegen.
 - **Alt-Konten**: Konten aus der Zeit vor Migration 0002 heißen `user<ID>` und haben keinen Notfallschlüssel. Betrifft nur Testkonten.
+- **Gebäudeliste im Hof**: Alle 18 Gebäude werden angezeigt, auch solche, die noch lange nicht baubar sind. Für neue Spieler ist das viel. Vorschlag für M2: nur baubare und gebaute Gebäude zeigen, den Rest einklappen.
 - **Onboarding vs. Startzustand**: Der Hof ist nach der Erstellung leer, das Zelt baut der Spieler in M1/M2 selbst (Onboarding-Schritt 3).

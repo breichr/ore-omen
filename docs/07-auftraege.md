@@ -149,6 +149,21 @@ An drei Abenden (ab 20:00 Ortszeit des Spielers) je eine Auswahl aus drei Verän
 - 1–2 richtig → +25 Hüter
 - Karte an die Kompanie verkaufen → +30 Kompanie, 250 $, −60 Hüter, `server_flag: blood_moon_stronger`
 
+## Arbeiten
+
+Einfache Timer-Tätigkeiten ohne Entscheidung und ohne Probe. Liegen als Daten in `content/jobs.yaml`.
+
+| Job | Code | Dauer | Ertrag | XP |
+|---|---|---|---|---|
+| Holz hacken | `chop_wood` | 15 min | 25 Holz | 10 |
+| Vieh treiben | `drive_cattle` | 30 min | 20 Vieh, 15 $ | 20 |
+| Kisten am Bahnhof schleppen | `haul_crates` | 1 h | 50 $ | 35 |
+| Erz sortieren | `sort_ore` | 2 h | 40 Eisen, 30 $ | 60 |
+
+- Immer nur **ein** Job gleichzeitig. Abbruch: kein Ertrag, keine XP.
+- Ertrag (nicht XP) steigt um **10 % pro Charakterstufe über 1**: `Ertrag × (1 + 0,1 × (Stufe − 1))`, gerundet.
+- Ressourcen-Ertrag ist durch das Lager gedeckelt (`03-siedlung.md`, „Lagergrenze“).
+
 ## Einstieg: Questreihe „Der letzte Zug“ (Onboarding)
 
 Führt in ca. 30 Minuten durch alle Grundsysteme. Muss vor Meilenstein M2 ausgearbeitet werden.

@@ -58,9 +58,40 @@ await shot('3-create');
 await page.getByRole('button', { name: 'Aussteigen' }).click();
 await expectUrl('/yard');
 await page.getByText(name).waitFor();
-await page.getByText('150 $').waitFor();
+await page.getByText('150 $', { exact: true }).waitFor();
 step(`character "${name}" created, yard shows name and 150 $`);
 await shot('4-yard');
+
+// M1: build the tent, see it in the queue with a countdown, start and stop a job
+await page.getByRole('button', { name: 'Bauen' }).first().click();
+await page.getByText('Haupthaus → Stufe 1').waitFor();
+await page
+	.getByText(/^\d+:\d\d(:\d\d)?$/)
+	.first()
+	.waitFor();
+await page.getByText('50 $', { exact: true }).waitFor();
+step('tent under construction with countdown, 100 $ paid');
+await page.getByRole('button', { name: 'Anfangen' }).first().click();
+await page.getByText('Du arbeitest: Holz hacken').waitFor();
+await shot('4b-yard-building');
+page.once('dialog', (d) => d.accept());
+await page.getByRole('button', { name: 'Aufhören' }).click();
+await page.getByText('Du arbeitest: Holz hacken').waitFor({ state: 'detached' });
+step('job started and cancelled');
+
+// Spend start skill points: level 1 caps a skill at 3
+await page.getByRole('link', { name: /Jetzt verteilen/ }).click();
+await page.waitForURL((u) => u.pathname === '/character');
+const aimUp = page.getByRole('button', { name: 'Zielen erhöhen' });
+for (let i = 0; i < 3; i++) await aimUp.click();
+if (!(await aimUp.isDisabled())) throw new Error('skill cap not enforced in UI');
+await page.getByRole('button', { name: 'Übernehmen' }).click();
+await page.getByText('Gespeichert.').waitFor();
+await page.getByText('2 Skillpunkte frei').waitFor();
+await shot('4c-character');
+await page.getByRole('link', { name: 'Zurück zum Hof' }).click();
+await page.waitForURL((u) => u.pathname === '/yard');
+step('skill points spent, cap respected');
 
 // "close the app and reopen": new page in the same browser profile
 await page.close();
@@ -90,9 +121,10 @@ if (shots) await page2.screenshot({ path: `${shots}/5-offline.png` });
 await context.setOffline(false);
 
 // Logout
-await page2.goto(`${base}/yard`);
+await page2.goto(`${base}/settings`);
 await page2.getByRole('button', { name: 'Abmelden' }).click();
-await page2.waitForURL((u) => u.pathname === '/login');
+await page2.waitForURL((u) => u.pathname === '/');
+await page2.goto(`${base}/login`);
 step('logout');
 
 // Forgot password: recover with the key, get a new one, land in the yard

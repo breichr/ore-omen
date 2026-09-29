@@ -98,6 +98,113 @@ export const de = {
 		submit: 'Aussteigen'
 	},
 
+	resources: {
+		wood: 'Holz',
+		iron: 'Eisen',
+		cattle: 'Vieh',
+		whiskey: 'Whiskey',
+		silver: 'Silber',
+		salt: 'Salz',
+		black_ore: 'Schwarzerz',
+		dollars: '$'
+	} as Record<string, string>,
+
+	mainHouse: {
+		tent: 'Zelt',
+		hut: 'Hütte',
+		log_house: 'Blockhaus',
+		ranch_house: 'Ranchhaus',
+		manor: 'Herrenhaus'
+	} as Record<string, string>,
+
+	categories: {
+		core: 'Kern',
+		production: 'Produktion',
+		character: 'Charakter & Klassen',
+		defense: 'Verteidigung',
+		supernatural: 'Übernatürlich'
+	} as Record<string, string>,
+
+	settlement: {
+		storage: (cap: number) => `Lager: ${cap.toLocaleString('de-DE')} je Ressource`,
+		perHour: (n: number) => `+${n}/h`,
+		full: 'voll',
+		queueTitle: 'Im Bau',
+		queueEmpty: 'Gerade wird nichts gebaut.',
+		slots: (used: number, total: number) => `${used}/${total} Bauplätze`,
+		buildingsTitle: 'Gebäude',
+		level: (n: number) => `Stufe ${n}`,
+		notBuilt: 'Noch nicht gebaut',
+		build: 'Bauen',
+		upgrade: (n: number) => `Ausbauen auf ${n}`,
+		maxed: 'Höchste Stufe',
+		cost: 'Kosten',
+		duration: 'Dauer',
+		produces: 'Produktion',
+		cancel: 'Abbrechen',
+		cancelConfirm: 'Bau abbrechen? Du bekommst die Hälfte der Kosten zurück.',
+		lost: (text: string) => `Kein Platz im Lager, verfallen: ${text}`,
+		upgradeTo: (name: string, n: number) => `${name} → Stufe ${n}`
+	},
+
+	jobs: {
+		title: 'Arbeit',
+		intro: 'Immer nur eine Arbeit auf einmal.',
+		start: 'Anfangen',
+		cancel: 'Aufhören',
+		cancelConfirm: 'Aufhören? Du bekommst nichts dafür.',
+		running: (name: string) => `Du arbeitest: ${name}`,
+		done: (name: string) => `Fertig: ${name}`,
+		overflow: (text: string) => `Lager zu voll, verfällt: ${text}`,
+		xp: (n: number) => `${n} XP`
+	},
+
+	reasons: {
+		main_house_too_low: 'Haupthaus zu niedrig',
+		not_enough_resources: 'Zu wenig Ressourcen',
+		queue_full: 'Alle Bauplätze belegt',
+		already_building: 'Wird schon gebaut',
+		excluded: 'Verträgt sich nicht mit einem anderen Gebäude',
+		max_level: 'Höchste Stufe erreicht'
+	} as Record<string, string>,
+
+	progress: {
+		xp: (have: number, need: number) =>
+			`${have.toLocaleString('de-DE')} / ${need.toLocaleString('de-DE')} XP`,
+		pointsAvailable: 'Du hast Punkte zu verteilen.',
+		distribute: 'Jetzt verteilen'
+	},
+
+	points: {
+		title: 'Charakter',
+		back: 'Zurück zum Hof',
+		attributesTitle: 'Attribute',
+		skillsTitle: 'Skills',
+		freeAttributes: (n: number) => (n === 1 ? '1 Attributpunkt frei' : `${n} Attributpunkte frei`),
+		freeSkills: (n: number) => (n === 1 ? '1 Skillpunkt frei' : `${n} Skillpunkte frei`),
+		cap: (n: number) => `Höchstens ${n} Punkte pro Skill (Stufe + 2).`,
+		duelValues: 'Duellwerte',
+		duelValue: 'Duellwert',
+		save: 'Übernehmen',
+		reset: 'Zurücksetzen',
+		saved: 'Gespeichert.'
+	},
+
+	skills: {
+		toughness: 'Zähigkeit',
+		building: 'Bauen',
+		carrying: 'Tragen',
+		aim: 'Zielen',
+		reflexes: 'Reflexe',
+		sleight_of_hand: 'Fingerfertigkeit',
+		instinct: 'Instinkt',
+		crafting: 'Handwerk',
+		cartography: 'Kartenkunde',
+		nerve: 'Nerven',
+		trade: 'Handel',
+		persuasion: 'Überreden'
+	} as Record<string, string>,
+
 	yard: {
 		title: 'Dein Hof',
 		level: (n: number) => `Stufe ${n}`,
@@ -105,7 +212,7 @@ export const de = {
 		emptyTitle: 'Eine Parzelle am Stadtrand',
 		empty:
 			'Festgetretene Erde, ein Pflock mit deiner Nummer, sonst nichts. Kein Zelt, kein Zaun. Nachts hört man die Mine atmen.',
-		comingSoon: 'Bauen und Arbeiten kommen mit dem nächsten Zug.'
+		firstStep: 'Fang mit einem Zelt an: Das Haupthaus bestimmt, wie hoch alles andere wachsen darf.'
 	},
 
 	classes: {
@@ -155,6 +262,23 @@ export const de = {
 		username_chars: 'Erlaubt sind Buchstaben ohne Umlaute, Ziffern, _ und -.',
 		password_length: 'Das Passwort muss mindestens 8 Zeichen lang sein.',
 		invalid_password: 'Das Passwort stimmt nicht.',
+		unknown_building: 'Dieses Gebäude gibt es nicht.',
+		main_house_too_low: 'Dafür muss zuerst das Haupthaus höher sein.',
+		not_enough_resources: 'Dafür reichen deine Vorräte nicht.',
+		queue_full: 'Alle Bauplätze sind belegt.',
+		already_building: 'Daran wird schon gebaut.',
+		excluded: 'Das verträgt sich nicht mit einem anderen Gebäude.',
+		max_level: 'Das Gebäude hat die höchste Stufe.',
+		not_found: 'Das gibt es nicht mehr.',
+		unknown_job: 'Diese Arbeit gibt es nicht.',
+		job_running: 'Du arbeitest schon.',
+		no_job_running: 'Du arbeitest gerade nicht.',
+		no_character: 'Leg zuerst einen Charakter an.',
+		nothing_to_spend: 'Du hast nichts verteilt.',
+		not_enough_attribute_points: 'So viele Attributpunkte hast du nicht.',
+		not_enough_skill_points: 'So viele Skillpunkte hast du nicht.',
+		skill_cap: 'Ein Skill darf höchstens Stufe + 2 Punkte haben.',
+		unknown_skill: 'Unbekannter Skill.',
 		invalid_recovery: 'Benutzername oder Notfallschlüssel stimmt nicht.',
 		rate_limited: 'Zu viele Versuche. Warte eine Minute.',
 		character_exists: 'Du hast bereits einen Charakter.',

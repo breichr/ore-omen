@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { api, ApiError } from '$lib/api';
 	import Offline from '$lib/Offline.svelte';
@@ -8,11 +9,13 @@
 		ATTRIBUTE_START_VALUE,
 		CLASSES
 	} from '$lib/rules';
+	import { suggestCharacterName } from '$lib/nameSuggestion';
 	import { de, errorText } from '$lib/text/de';
 
 	let { data } = $props();
 
-	let name = $state('');
+	// Suggestion from the username; the player can change it
+	let name = $state(untrack(() => suggestCharacterName(data.me?.user.username ?? '')));
 	let characterClass = $state('');
 	let allocation = $state<Record<string, number>>(
 		Object.fromEntries(ATTRIBUTES.map((a) => [a, 0]))
