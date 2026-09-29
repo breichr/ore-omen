@@ -53,9 +53,9 @@ Frag nach, bevor du offene Entscheidungen aus 08-technik.md selbst triffst.
 ## M1 – Siedlung & Zeit
 
 ### Aufgaben
-- [ ] `app/game/buildings.py`: reine Funktionen für Kosten, Bauzeit, Produktion, Lager, geschützter Anteil
-- [ ] Unit-Tests mit der Referenztabelle aus `03-siedlung.md` (Holzfällerplatz Stufe 1/3/5/7/10)
-- [ ] `content/buildings.yaml` mit allen Gebäuden und Basiswerten
+- [x] `app/game/buildings.py`: reine Funktionen für Kosten, Bauzeit, Produktion, Lager, geschützter Anteil
+- [x] Unit-Tests mit der Referenztabelle aus `03-siedlung.md` (Holzfällerplatz Stufe 1/3/5/7/10)
+- [x] `content/buildings.yaml` mit allen Gebäuden und Basiswerten
 - [ ] Migration: `buildings`, `build_queue`, `resources`, `scheduled_events`
 - [ ] Ressourcen mit Lazy-Berechnung (Stand + Rate × Δt, gedeckelt durch Lager)
 - [ ] Worker: Schleife mit `FOR UPDATE SKIP LOCKED`, Handler-Registry nach `kind`
@@ -63,7 +63,7 @@ Frag nach, bevor du offene Entscheidungen aus 08-technik.md selbst triffst.
 - [ ] Arbeiten: 3–5 einfache Jobs (Holz hacken, Vieh treiben …) als Timer
 - [ ] Charakterstufe und Erfahrung, Attributpunkte bei Stufenaufstieg
 - [ ] Frontend: Hof-Screen (Gebäudeliste, Stufen, Ausbau-Button mit Kosten und Zeit), Lageranzeige, Arbeitsliste, lokaler Countdown
-- [ ] Charaktererstellung: Benutzername als Charakternamen vorschlagen (vorausgefüllt, änderbar). Offen: Benutzernamen erlauben Ziffern und `_`, Charakternamen nicht – vorher klären, wie der Vorschlag angepasst wird (z. B. `_` → Leerzeichen, Ziffern entfernen) oder ob das Feld dann leer bleibt
+- [x] Charaktererstellung: Benutzername als Charakternamen vorschlagen (vorausgefüllt, änderbar). `_`/`-` → Leerzeichen, Ziffern entfernen, Wortanfänge groß; bleiben weniger als 3 Zeichen, bleibt das Feld leer
 - [ ] Integrationstest: Bau starten → Zeit vorspulen → Worker verarbeitet → Stufe erhöht
 
 ### Abnahme
