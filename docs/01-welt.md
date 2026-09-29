@@ -15,7 +15,16 @@ Territorium im Jahr 1878. Die Eisenbahn kam, dann die Mine, dann das Licht. Seit
 | **Stille Mission** | Verlassene Kirche, Sitz des Ordens, Endgame-Ereignisse | Duelle erlaubt |
 | **Die Schlucht** | Gebiet der Hüter, nur ab Ruf *Bekannt* bei den Hütern | Kein PvP |
 
-Reisen zwischen Regionen kostet Zeit (Timer), Standard 15–60 min.
+Reisen zwischen Regionen kostet Zeit (Timer), aber kein Geld. Aufträge startet man nur in ihrer Region.
+
+| Von Hollow Creek nach | Kiefernhang | Tiefe Ader | Stille Mission | Salzebene | Schlucht |
+|---|---|---|---|---|---|
+| Minuten | 15 | 30 | 30 | 45 | 60 |
+
+- Zwischen zwei Außenregionen reist man über die Stadt: Zeiten addiert, höchstens 60 min.
+- Kartenzimmer −2 % pro Stufe, Hüter *Vertraut* −15 % (multiplikativ), auf ganze Sekunden gerundet.
+- Die Schlucht erst ab Hüter *Bekannt*.
+- Während einer Reise ist der Charakter unterwegs: keine Arbeit, kein Auftrag.
 
 ## Ressourcen
 

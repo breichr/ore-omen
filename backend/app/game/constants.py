@@ -64,6 +64,15 @@ REGIONS: Final = (
 )
 TRAVEL_MINUTES_MIN: Final = 15
 TRAVEL_MINUTES_MAX: Final = 60
+# Minutes from Hollow Creek (docs/01-welt.md); outer ↔ outer = sum, capped at max
+TRAVEL_MINUTES_FROM_TOWN: Final[dict[str, int]] = {
+    "pine_slope": 15,
+    "deep_vein": 30,
+    "silent_mission": 30,
+    "salt_flats": 45,
+    "the_gorge": 60,
+}
+GORGE_MIN_KEEPERS_REPUTATION: Final = 200  # "known"
 
 RESOURCES: Final = ("wood", "iron", "cattle", "whiskey", "silver", "salt", "black_ore")
 
@@ -103,6 +112,7 @@ REPUTATION_FACTION_QUEST_MAX: Final = 50
 OATH_FACTIONS: Final = ("company", "ash_gang")
 OATH_CAP: Final = 799  # cap for both without oath, and for the opposing side after an oath
 OATH_SWITCH_LOSS: Final = 0.50  # share of current reputation lost at the abandoned faction
+OATH_MIN_REPUTATION: Final = 500  # "respected"
 
 ORDER_CAP_CORRUPTION: Final = 50  # from this corruption on, order reputation ...
 ORDER_CAP_VALUE: Final = 199  # ... is capped at this value
@@ -316,7 +326,7 @@ CHECK_DIFFICULTIES: Final[dict[str, int]] = {
     "deadly": 35,
 }
 CHECK_DIE: Final = 20
-DAILY_JOBS_PER_FACTION: Final = 3
+DAILY_JOBS_PER_FACTION: Final = 3  # daily quests offered per faction and game day
 DAILY_JOB_MINUTES_MIN: Final = 15
 DAILY_JOB_MINUTES_MAX: Final = 120
 TRAIN_HEIST_DIFFICULTY_REDUCTION_PER_ROLE: Final = 5

@@ -87,10 +87,13 @@ bevor du DB oder API anfasst. Zeit im Worker muss für Tests injizierbar sein.
 - [ ] JSON-Schema für Aufträge, Validierung aller Dateien in `content/quests/` in der CI
 - [ ] Migration: `reputation`, `oaths`, `quest_instances`, `items`
 - [ ] Auftragsablauf: starten → Timer → Ereignis → Wahl → Ausgang, Seed pro Instanz
-- [ ] Tagesarbeiten: tägliches Würfeln um 04:00 (`daily_reset`-Ereignis)
+- [ ] Tagesarbeiten: tägliches Würfeln um 04:00 (aus Spieltag + Charakter abgeleitet, kein eigenes Ereignis nötig)
 - [ ] Inhalte: Onboarding „Der letzte Zug“ (vorher mit Projektinhaber ausformulieren), je Fraktion 3 Tagesarbeiten + 1 Fraktionsauftrag aus `07-auftraege.md`
 - [ ] Reisen zwischen Regionen als Timer
 - [ ] Frontend: Auftragsliste, Ereignis-Screen mit Optionen und Prozentanzeige, Fraktions-Screen mit Rufbalken
+- [ ] Hof: nur gebaute und baubare Gebäude zeigen, den Rest unter „Weitere Gebäude“ einklappen
+- [ ] Treueschwur-Button im Fraktions-Screen (ab Geschätzt)
+- [ ] Entwürfe der 8 fehlenden Tagesarbeiten vorlegen und nach Freigabe einbauen
 
 ### Abnahme
 Neuer Spieler kommt in ca. 30 Minuten durch das Onboarding. Rufnebenwirkungen stimmen mit der Matrix. Neuladen während einer Probe ändert das Ergebnis nicht.
@@ -206,5 +209,4 @@ Zwei Wochen Beta ohne Datenverlust. Mindestens 60 % der Tester schließen das On
 - **Skillpunkte verteilen (M1/M3)**: Neue Charaktere haben 5 unverteilte Skillpunkte. Verteilung und `character_skills` kommen mit der Stufenlogik in M1 oder mit M3. Welcher Meilenstein?
 - **Rate-Limit** liegt im Speicher des API-Prozesses (reicht für eine Instanz). Vor horizontaler Skalierung in Postgres verlegen.
 - **Alt-Konten**: Konten aus der Zeit vor Migration 0002 heißen `user<ID>` und haben keinen Notfallschlüssel. Betrifft nur Testkonten.
-- **Gebäudeliste im Hof**: Alle 18 Gebäude werden angezeigt, auch solche, die noch lange nicht baubar sind. Für neue Spieler ist das viel. Vorschlag für M2: nur baubare und gebaute Gebäude zeigen, den Rest einklappen.
 - **Onboarding vs. Startzustand**: Der Hof ist nach der Erstellung leer, das Zelt baut der Spieler in M1/M2 selbst (Onboarding-Schritt 3).

@@ -8,7 +8,13 @@
 | Fraktionsauftrag | `faction` | einmalig | +30 bis +50 | 1–3 Entscheidungen, an Rufstufe gebunden |
 | Questreihe | `chain` | einmalig | variabel | mehrtägig, schaltet Regionen/Gebäude/Titel frei |
 
-Tagesarbeiten werden täglich um 04:00 Serverzeit neu gewürfelt.
+Tagesarbeiten werden täglich um 04:00 Serverzeit neu gewürfelt:
+
+- Jede Fraktion bietet pro Tag **3 Tagesarbeiten** aus ihrem Pool an; jede kann einmal pro Tag erledigt werden.
+- Kein Mindestruf. Die Hüter-Tagesarbeiten spielen außerhalb der Schlucht.
+- Das Angebot wird aus Spieltag (Wechsel 04:00 Europe/Vienna) und Charakter abgeleitet (Seed), es braucht dafür kein eigenes Ereignis.
+
+**Eine Tätigkeit zur Zeit**: Arbeit, Auftrag (Unterwegs-Timer) und Reise schließen sich gegenseitig aus. Das Ereignis am Ziel (die Wahl) blockiert nichts.
 
 ## Ablauf eines Auftrags
 
@@ -96,7 +102,20 @@ Aufträge liegen als JSON in `content/quests/<fraktion>/<id>.json`. Die Engine b
 | `server_flag` | `{name: value}` | Serverweite Auswirkungen (z. B. Blutmond stärker) |
 | `next` | `quest_id` | Folgeauftrag |
 
-Option-Bedingungen (optional): `requires` mit `class`, `min_corruption`, `max_corruption`, `item`, `reputation`.
+Option-Bedingungen (optional): `requires` mit `class`, `min_corruption`, `max_corruption`, `item`, `reputation`, `dollars`.
+
+Zusätzliche Felder (JSON-Schema: `content/quests/schema.json`, in der CI geprüft):
+
+| Feld | Bedeutung |
+|---|---|
+| `after` | Auftrag erst verfügbar, wenn dieser Auftrag abgeschlossen ist (Questreihen) |
+| `task` | Aufgabe statt Ereignis: `{"job": code}` oder `{"build": code}`; wird nach `duration_min` erledigt |
+| `effects` + `text` auf oberster Ebene | Auftrag ohne Ereignis: Ausgang direkt bei Ankunft |
+| `check.skill` | optionaler Skill zum Attribut; `difficulty` als Zahl oder `easy`/`medium`/`hard`/`deadly` |
+
+**Effekte ohne fertiges System** (`combat`, `bounty`, `status`, `server_flag`) werden gespeichert und angezeigt; ihre Wirkung kommt mit dem jeweiligen Meilenstein. Bis M3 gilt ein `combat` als verloren. Verderbnis wird gespeichert und wirkt ab M5. Gegenstände landen als Inventar in `items` (`content/items.yaml`).
+
+**Fraktionsaufträge in M2**: *Der stille Schacht* und *Die Glocke von San Isidro*. *Der Drei-Uhr-Zug* (mehrere Spieler, fester Termin) und *Die Karte, die sich bewegt* (drei Abende) kommen, sobald die Mechaniken dafür stehen.
 
 ## Beispielaufträge
 
@@ -166,11 +185,13 @@ Einfache Timer-Tätigkeiten ohne Entscheidung und ohne Probe. Liegen als Daten i
 
 ## Einstieg: Questreihe „Der letzte Zug“ (Onboarding)
 
-Führt in ca. 30 Minuten durch alle Grundsysteme. Muss vor Meilenstein M2 ausgearbeitet werden.
+Führt in ca. 30 Minuten durch alle Grundsysteme. Texte freigegeben, liegen in `content/quests/onboarding/`.
 
-1. Ankunft, der Schaffner ist verschwunden → erste Entscheidung
-2. Erste Arbeit (15 min Timer, danach 1 min für neue Spieler)
-3. Zelt aufbauen → erstes Gebäude (Haupthaus Stufe 1)
-4. Nach dem Mann aus dem Abteil fragen → erste Probe
-5. Übungsduell gegen den Hilfssheriff → Duelltaktik kennenlernen
-6. Die erste Fraktion ruft → Rufsystem
+1. **Ankunft** – Mantel mitnehmen (Gegenstand „Fremder Mantel“) oder hängen lassen
+2. **Erste Arbeit** – Kisten schleppen, im Onboarding **1 min** (Ertrag wie der Job)
+3. **Ein Dach** – Zelt (Haupthaus Stufe 1) bauen, im Onboarding **1 min**, Kosten wie normal
+4. **Der Mann aus dem Abteil** – erste Probe (Charisma + Überreden, leicht), Alternativen: Whiskey (5 $) oder Mantel zeigen
+5. **Übungsduell** gegen den Hilfssheriff – kommt mit M3
+6. **Die Stadt ruft** – eine Fraktion wählen, +20 Ruf dort (Nebenwirkungen sichtbar)
+
+Die Verkürzungen gelten nur innerhalb des Onboardings, sonst gelten die normalen Werte.

@@ -37,7 +37,13 @@ Aufträge geben nur den direkten Ruf an, die Engine berechnet die Nebenwirkungen
 
 - Ruf bei Kompanie **und** Aschenbande ist bei **799** gedeckelt, solange kein Schwur geleistet ist. Ab *Vertraut* (800) muss sich der Spieler also festlegen.
 - Wer einer der beiden Fraktionen geschworen hat, ist bei der Gegenseite ebenfalls bei **799** gedeckelt (damit ist deren Ehrenrang gesperrt).
+- Schwören möglich ab *Geschätzt* (500) bei Kompanie oder Aschenbande.
 - Wechsel möglich, kostet 50 % des aktuellen Rufs bei der verlassenen Fraktion.
+
+## Deckel
+
+- Nebenwirkungen richten sich nach dem **tatsächlich gewonnenen** Ruf. Wer am Deckel steht, gewinnt nichts und verliert dadurch auch nichts bei den anderen.
+- Sinkt ein Deckel unter den aktuellen Wert (z. B. Orden bei Verderbnis ≥ 50), wird der Ruf **sofort** auf den Deckel gekürzt.
 
 ## Die Kompanie
 
