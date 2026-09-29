@@ -42,6 +42,7 @@
 
 		<InstallPrompt />
 
+		<a class="btn btn-ghost" href="/settings">{de.settings.link}</a>
 		<button class="btn btn-ghost" onclick={logout}>{de.auth.logout}</button>
 	</main>
 {/if}

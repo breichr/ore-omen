@@ -52,6 +52,17 @@ export const de = {
 		toRecover: 'Passwort vergessen? Mit Notfallschlüssel wiederherstellen.'
 	},
 
+	settings: {
+		title: 'Einstellungen',
+		link: 'Einstellungen',
+		back: 'Zurück zum Hof',
+		account: (name: string) => `Angemeldet als ${name}`,
+		keyTitle: 'Notfallschlüssel',
+		keyIntro:
+			'Erzeugt einen neuen Schlüssel. Der alte gilt danach nicht mehr. Zur Bestätigung brauchst du dein Passwort.',
+		keySubmit: 'Neuen Schlüssel erzeugen'
+	},
+
 	recovery: {
 		title: 'Wiederherstellen',
 		intro:
@@ -143,6 +154,7 @@ export const de = {
 		username_length: 'Der Benutzername muss 3 bis 20 Zeichen lang sein.',
 		username_chars: 'Erlaubt sind Buchstaben ohne Umlaute, Ziffern, _ und -.',
 		password_length: 'Das Passwort muss mindestens 8 Zeichen lang sein.',
+		invalid_password: 'Das Passwort stimmt nicht.',
 		invalid_recovery: 'Benutzername oder Notfallschlüssel stimmt nicht.',
 		rate_limited: 'Zu viele Versuche. Warte eine Minute.',
 		character_exists: 'Du hast bereits einen Charakter.',

@@ -143,6 +143,7 @@ Server gibt immer die **absoluten Endzeitpunkte** von Timern zurück, der Client
   - Wird bei der Registrierung serverseitig erzeugt und **genau einmal** angezeigt. Gespeichert wird nur der Argon2-Hash.
   - Format: 25 Zeichen Crockford-Base32 in fünf Gruppen, z. B. `7K3QM-D9XHT-2VRPA-W8NCE-4FJ6B` (125 Bit). Eingabe ignoriert Groß-/Kleinschreibung, Leerzeichen und Bindestriche.
   - Wiederherstellen: Benutzername + Schlüssel + neues Passwort. Danach ist der alte Schlüssel ungültig, ein neuer wird einmal angezeigt, alle bestehenden Sessions werden beendet.
+  - Neu erzeugen im Einstellungs-Screen: eingeloggt + aktuelles Passwort. Der alte Schlüssel wird ungültig, der neue einmal angezeigt. Sessions bleiben bestehen.
   - Wer Passwort und Schlüssel verliert, verliert das Konto (kein Support-Weg in M0).
 - Session-Cookie (HttpOnly, Secure, SameSite=Lax) mit zufälligem Token; in `sessions` wird nur der SHA-256-Hash gespeichert. Laufzeit **30 Tage gleitend**: jede Anfrage verlängert `expires_at`. Logout löscht die Session serverseitig.
 - Passwort-Hash mit Argon2

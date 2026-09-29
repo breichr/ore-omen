@@ -111,6 +111,23 @@ def recover(
     return RecoveryKeyOut(recovery_key=new_key)
 
 
+class PasswordIn(BaseModel):
+    password: str = Field(max_length=256)
+
+
+@router.post(
+    "/recovery-key",
+    dependencies=[Depends(rate_limit("rekey", "rate_limit_recover"))],
+)
+def rotate_recovery_key(body: PasswordIn, current: CurrentSessionDep, db: DbDep) -> RecoveryKeyOut:
+    try:
+        new_key = auth.rotate_recovery_key(db, current.user, body.password)
+    except CredentialError as e:
+        raise api_error(status.HTTP_401_UNAUTHORIZED, e.code) from None
+    db.commit()
+    return RecoveryKeyOut(recovery_key=new_key)
+
+
 @router.post("/logout")
 def logout(
     current: CurrentSessionDep, response: Response, db: DbDep, settings: SettingsDep

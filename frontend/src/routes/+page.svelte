@@ -53,9 +53,4 @@
 	li {
 		margin: 0.4rem 0;
 	}
-	a.btn {
-		text-align: center;
-		text-decoration: none;
-		line-height: 1.6;
-	}
 </style>

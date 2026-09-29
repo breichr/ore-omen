@@ -159,3 +159,25 @@ def test_login_rate_limit(client):
     r = login(client, username="x", password="falsch")
     assert r.status_code == 429
     assert r.json()["detail"]["code"] == "rate_limited"
+
+
+def test_rotate_recovery_key_when_logged_in(client):
+    old_key = register(client).json()["recovery_key"]
+    assert client.post("/auth/recovery-key", json={"password": "geheim123"}).status_code == 200
+    r = client.post("/auth/recovery-key", json={"password": "geheim123"})
+    new_key = r.json()["recovery_key"]
+    assert new_key != old_key
+    assert client.get("/me").status_code == 200  # session stays valid
+    client.cookies.clear()
+    assert recover(client, old_key).status_code == 401
+    assert recover(client, new_key).status_code == 200
+
+
+def test_rotate_recovery_key_needs_password_and_login(client):
+    assert client.post("/auth/recovery-key", json={"password": "geheim123"}).status_code == 401
+    key = register(client).json()["recovery_key"]
+    r = client.post("/auth/recovery-key", json={"password": "falsch123"})
+    assert r.status_code == 401
+    assert r.json()["detail"]["code"] == "invalid_password"
+    client.cookies.clear()
+    assert recover(client, key).status_code == 200  # old key still valid

@@ -109,5 +109,21 @@ await page2.getByRole('button', { name: 'Weiter' }).click();
 await page2.waitForURL((u) => u.pathname === '/yard');
 step('password recovered with key, new key issued');
 
+// Settings: rotate the key while logged in (needs the current password)
+await page2.getByRole('link', { name: 'Einstellungen' }).click();
+await page2.waitForURL((u) => u.pathname === '/settings');
+await page2.getByLabel('Passwort').fill('falsch123');
+await page2.getByRole('button', { name: 'Neuen Schlüssel erzeugen' }).click();
+await page2.getByText('Das Passwort stimmt nicht.').waitFor();
+await page2.getByLabel('Passwort').fill('neuesPasswort');
+await page2.getByRole('button', { name: 'Neuen Schlüssel erzeugen' }).click();
+const rotatedKey = (await page2.getByTestId('recovery-key').textContent()).trim();
+if (rotatedKey === newKey) throw new Error('settings must issue a new key');
+if (shots) await page2.screenshot({ path: `${shots}/6-settings-key.png` });
+await page2.getByLabel('Ich habe den Schlüssel sicher notiert.').check();
+await page2.getByRole('button', { name: 'Weiter' }).click();
+await page2.getByRole('heading', { name: 'Einstellungen' }).waitFor();
+step('settings: wrong password rejected, new key issued');
+
 await browser.close();
 console.log('smoke test passed');

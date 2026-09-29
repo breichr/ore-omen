@@ -66,6 +66,18 @@ def recover(db: Session, username: str, recovery_key: str, new_password: str) ->
     return user, new_key
 
 
+def rotate_recovery_key(db: Session, user: User, password: str) -> str:
+    """Issue a new recovery key for a logged-in user who confirms the password.
+
+    Raises CredentialError("invalid_password") if the password is wrong.
+    """
+    if not verify_password(user.password_hash, password):
+        raise credentials.CredentialError("invalid_password")
+    new_key = credentials.new_recovery_key()
+    user.recovery_key_hash = hash_password(credentials.normalize_recovery_key(new_key))
+    return new_key
+
+
 def create_session(
     db: Session, user: User, now: datetime, settings: Settings, user_agent: str | None
 ) -> str:
