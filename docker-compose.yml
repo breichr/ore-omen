@@ -1,0 +1,56 @@
+# Ore & Omen – full stack. Local: `docker compose up --build`, then http://localhost:8080
+# Production: see docs/deploy.md (Coolify).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ore}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ore}
+      POSTGRES_DB: ${POSTGRES_DB:-ore_omen}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  api:
+    build: ./backend
+    environment:
+      OO_ENV: ${OO_ENV:-production}
+      OO_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ore}:${POSTGRES_PASSWORD:-ore}@db:5432/${POSTGRES_DB:-ore_omen}
+      # false only for plain-http local runs; production is behind TLS
+      OO_COOKIE_SECURE: ${OO_COOKIE_SECURE:-true}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  worker:
+    build: ./backend
+    command: ["python", "-m", "app.worker"]
+    environment:
+      OO_ENV: ${OO_ENV:-production}
+      OO_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ore}:${POSTGRES_PASSWORD:-ore}@db:5432/${POSTGRES_DB:-ore_omen}
+    depends_on:
+      api:
+        condition: service_healthy  # api runs the migrations
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  db-data:

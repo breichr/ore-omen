@@ -21,18 +21,18 @@ Schätzungen sind Abende à ca. 3 h mit Claude Code, als grobe Orientierung.
 ## M0 – Fundament
 
 ### Aufgaben
-- [ ] Offene Entscheidungen aus `08-technik.md` klären (Stack, Domain, Zeitzone, Sprache)
-- [ ] Repo-Struktur anlegen, `tools/duel_sim.py` übernehmen
-- [ ] `docker-compose.yml` mit `db`, `api`, `worker`, `frontend`
-- [ ] Backend-Grundgerüst: FastAPI, Settings über Umgebungsvariablen, Healthcheck `/health`
-- [ ] SQLAlchemy + Alembic, erste Migration: `users`, `characters`
-- [ ] Auth: Registrierung, Login, Logout, Session-Cookie, Argon2, Rate-Limit
-- [ ] Charaktererstellung: Name (eindeutig), Klasse, 5 Startpunkte je Attribut + 4 frei verteilbar
-- [ ] `app/game/constants.py` mit allen Konstanten aus den Docs (auch wenn noch ungenutzt)
-- [ ] Frontend: SvelteKit, Routing, Login-/Register-Screen, Charaktererstellung, leerer „Hof“-Screen
-- [ ] PWA: Manifest, Icons, Service Worker mit App-Shell-Cache, Offline-Hinweis
-- [ ] CI: Tests + Lint bei jedem Push
-- [ ] Deployment auf Coolify
+- [x] Offene Entscheidungen aus `08-technik.md` klären (Stack, Domain, Zeitzone, Sprache)
+- [x] Repo-Struktur anlegen, `tools/duel_sim.py` übernehmen
+- [x] `docker-compose.yml` mit `db`, `api`, `worker`, `frontend`
+- [x] Backend-Grundgerüst: FastAPI, Settings über Umgebungsvariablen, Healthcheck `/health`
+- [x] SQLAlchemy + Alembic, erste Migration: `users`, `characters` (+ `sessions`)
+- [x] Auth: Registrierung, Login, Logout, Session-Cookie, Argon2, Rate-Limit
+- [x] Charaktererstellung: Name (eindeutig), Klasse, 5 Startpunkte je Attribut + 4 frei verteilbar, 5 Skillpunkte (unverteilt)
+- [x] `app/game/constants.py` mit allen Konstanten aus den Docs (auch wenn noch ungenutzt)
+- [x] Frontend: SvelteKit, Routing, Login-/Register-Screen, Charaktererstellung, leerer „Hof“-Screen
+- [x] PWA: Manifest, Icons, Service Worker mit App-Shell-Cache, Offline-Hinweis
+- [x] CI: Tests + Lint bei jedem Push (`.github/workflows/ci.yml`)
+- [ ] Deployment auf Coolify – Anleitung in `docs/deploy.md`, hakt der Projektinhaber ab
 
 ### Abnahme
 Auf dem Handy registrieren, Charakter anlegen, App installieren, schließen, wieder öffnen → noch eingeloggt.
@@ -196,3 +196,9 @@ Zwei Wochen Beta ohne Datenverlust. Mindestens 60 % der Tester schließen das On
 ## Offene Fragen
 
 *(hier während der Umsetzung ergänzen)*
+
+- **Überfälle auf Siedlungen** (vor M5 ausarbeiten): Ablauf und Auflösung (Duell? eigene Probe?), Stufenrange, Wirkung von Palisade und Wachturm in Zahlen, Chance auf Brandschaden.
+- **Balancing-CI (M3)**: Mit `duel_sim.py --seed 1 -n 2000 klassen` liegt der Kopfgeldjäger bei **42,9 %**, also schon unter dem CI-Korridor 43–57 %. Vor M3 entscheiden: mehr Duelle je Paar (z. B. 10.000), Kopfgeldjäger nachbalancieren oder Korridor für ihn anpassen.
+- **Skillpunkte verteilen (M1/M3)**: Neue Charaktere haben 5 unverteilte Skillpunkte. Verteilung und `character_skills` kommen mit der Stufenlogik in M1 oder mit M3. Welcher Meilenstein?
+- **Rate-Limit** liegt im Speicher des API-Prozesses (reicht für eine Instanz). Vor horizontaler Skalierung in Postgres verlegen.
+- **Onboarding vs. Startzustand**: Der Hof ist nach der Erstellung leer, das Zelt baut der Spieler in M1/M2 selbst (Onboarding-Schritt 3).

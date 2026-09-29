@@ -1,6 +1,6 @@
 # 08 – Technik & Architektur
 
-> Stack ist ein **Vorschlag**. Vor Projektstart mit dem Projektinhaber bestätigen (siehe „Offen“).
+> Stack vom Projektinhaber bestätigt (siehe „Entschieden“).
 
 ## Überblick
 
@@ -55,6 +55,10 @@ ore-omen/
 
 ## Zeit und Timer
 
+- Alle Zeitpunkte werden in **UTC** gespeichert.
+- **Serverzeitzone**: `Europe/Vienna`. Tagesreset um **04:00**, Wochenwechsel **Montag 00:00**, jeweils Ortszeit Wien, sommerzeitfest über `zoneinfo` berechnet.
+- Spielerbezogene Zeiten (z. B. „ab 20:00 Ortszeit“, Ruhezeiten für Push) nutzen `users.timezone` (IANA-Name, Standard `Europe/Vienna`).
+
 Kein Echtzeit-Server. Alles Zeitgesteuerte ist ein **geplantes Ereignis** mit Fälligkeitszeitpunkt.
 
 ```sql
@@ -72,9 +76,12 @@ scheduled_events(
 ## Datenmodell (Kern)
 
 ```
-users(id, email, password_hash, created_at)
-characters(id, user_id, name, class, level, xp,
-           strength, dexterity, intellect, charisma, unspent_points,
+users(id, email, password_hash, timezone, created_at)
+sessions(id, user_id, token_hash, created_at, last_seen_at, expires_at,
+         user_agent)                                     -- 30 Tage gleitend
+characters(id, user_id UNIQUE, name, name_key UNIQUE, class,   -- name_key: casefold(name) level, xp,
+           strength, dexterity, intellect, charisma,
+           unspent_attribute_points, unspent_skill_points,
            dollars, bank_dollars, corruption_tenths,
            region, status, status_until, created_at)
 character_skills(character_id, skill, points)
@@ -93,6 +100,10 @@ duels(id, attacker_id, defender_id, seed, attacker_plan jsonb,
 
 quest_instances(id, character_id, quest_id, seed, state, step, data jsonb,
                 started_at, finishes_at)
+activities(id, character_id, kind, ref, data jsonb,   -- kind: job | travel
+           started_at, finishes_at, status)
+gangs(id, name, founder_id, created_at)
+gang_members(gang_id, character_id, role, joined_at)
 items(id, character_id, item_id, equipped bool)
 scars(character_id, scar_id, gained_at)
 
@@ -124,9 +135,16 @@ Server gibt immer die **absoluten Endzeitpunkte** von Timern zurück, der Client
 
 ## Auth
 
-- Session-Cookie (HttpOnly, Secure, SameSite=Lax), Passwort-Hash mit Argon2
+- Login mit E-Mail + Passwort. Für M0 ohne E-Mail-Bestätigung und ohne Passwort-Reset (kommt vor der Beta).
+- Session-Cookie (HttpOnly, Secure, SameSite=Lax) mit zufälligem Token; in `sessions` wird nur der SHA-256-Hash gespeichert. Laufzeit **30 Tage gleitend**: jede Anfrage verlängert `expires_at`. Logout löscht die Session serverseitig.
+- Passwort-Hash mit Argon2
 - Rate-Limit auf Login und schreibende Endpunkte
 - Ein Charakter pro Account (Mehrfachaccounts in den Nutzungsbedingungen verbieten)
+- Charaktername: 3–20 Zeichen, Buchstaben inkl. Umlaute, Leerzeichen, Bindestrich, Apostroph; eindeutig ohne Beachtung der Groß-/Kleinschreibung
+
+## Rundung
+
+Überall **ROUND_HALF_UP** über `decimal`, bei negativen Werten auf den Betrag angewendet (−1,5 → −2, −2,4 → −2). Eine zentrale Hilfsfunktion in `app/game/`, nie Pythons `round()` (Banker's Rounding). Verderbnis wird in Zehnteln gespeichert.
 
 ## Anti-Cheat
 
@@ -148,10 +166,14 @@ Server gibt immer die **absoluten Endzeitpunkte** von Timern zurück, der Client
 - Backups: tägliches `pg_dump`, 14 Tage Aufbewahrung
 - Migrationen laufen beim Start des `api`-Containers
 
-## Offen (vor Start klären)
+## Entschieden
 
-1. Stack bestätigen: SvelteKit + FastAPI + Postgres, oder Alternative (z. B. Vue, Node)
-2. Domain
-3. Serverzeitzone für tägliche Resets (Vorschlag: Europe/Vienna, 04:00)
-4. Spielersprache: nur Deutsch zum Start oder direkt i18n-fähig anlegen
-5. Monetarisierung: keine / kosmetisch / Spenden
+1. **Stack**: SvelteKit (static) + FastAPI + PostgreSQL
+2. **Domain**: noch keine. Bis dahin `docker-compose.yml` + Deploy-Anleitung (`docs/deploy.md`)
+3. **Zeitzone**: Europe/Vienna, Reset 04:00, Wochenwechsel Montag 00:00, Speicherung in UTC
+4. **Sprache**: nur Deutsch. Alle UI-Texte zentral in `frontend/src/lib/text/de.ts`
+5. **Monetarisierung**: keine bis nach der Beta
+
+## Offen
+
+*(derzeit nichts)*

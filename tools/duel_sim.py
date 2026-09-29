@@ -59,6 +59,8 @@ INSTINKT_PRO_PUNKT = 2        # v3: % Chance pro Punkt, JEDEN gekonterten Schuss
 SCHWARZERZ_SCHADEN = 1.25     # v2: vorher 1.5
 SEGEN_FAKTOR = 0.7            # v2: erster Treffer −30 % (vorher halbiert)
 VERDERBNIS_DUNKLER_BLICK = 50
+VERDERBNIS_SCHATTENSCHRITT = 75   # v5: Besessene
+SCHATTENSCHRITT_MALUS = 20        # v5: erster Schuss gegen Besessene −20 %
 PREDIGER_BONUS_VS_VERDERBT = 1.2
 
 FAECHER_MALUS = 10            # v3: vorher 20
@@ -108,6 +110,7 @@ class Zustand:
     faehigkeit_frei: bool = True
     instinkt_frei: bool = False
     dunkler_blick_frei: bool = False
+    schattenschritt_aktiv: bool = False
     schaden_verursacht: float = 0.0
     treffer: int = 0
 
@@ -182,6 +185,7 @@ class Duell:
         z = Zustand(k, float(k.max_leben))
         z.segen_aktiv = k.klasse == "Prediger"
         z.dunkler_blick_frei = k.verderbnis >= VERDERBNIS_DUNKLER_BLICK
+        z.schattenschritt_aktiv = k.verderbnis >= VERDERBNIS_SCHATTENSCHRITT
         return z
 
     def log(self, text: str) -> None:
@@ -267,7 +271,12 @@ class Duell:
         for _ in range(schuesse):
             if g.leben <= 0:
                 break
-            p = trefferchance(k, gk, zone, gekontert, g.bein_debuff, staub, extra)
+            schatten = 0
+            if g.schattenschritt_aktiv:   # v5: nur der erste Schuss gegen den Besessenen
+                g.schattenschritt_aktiv = False
+                schatten = -SCHATTENSCHRITT_MALUS
+                self.log(f"{gk.name} flackert wie ein Schatten (Schattenschritt).")
+            p = trefferchance(k, gk, zone, gekontert, g.bein_debuff, staub, extra + schatten)
             g.bein_debuff = False
             if self.rng.random() * 100 < p:
                 dmg = ZONEN[zone][0] * k.waffenfaktor
