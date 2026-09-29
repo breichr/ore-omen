@@ -21,13 +21,13 @@ Schätzungen sind Abende à ca. 3 h mit Claude Code, als grobe Orientierung.
 ## M0 – Fundament
 
 ### Aufgaben
-- [ ] Offene Entscheidungen aus `08-technik.md` klären (Stack, Domain, Zeitzone, Sprache)
+- [x] Offene Entscheidungen aus `08-technik.md` klären (Stack, Domain, Zeitzone, Sprache)
 - [ ] Repo-Struktur anlegen, `tools/duel_sim.py` übernehmen
 - [ ] `docker-compose.yml` mit `db`, `api`, `worker`, `frontend`
 - [ ] Backend-Grundgerüst: FastAPI, Settings über Umgebungsvariablen, Healthcheck `/health`
 - [ ] SQLAlchemy + Alembic, erste Migration: `users`, `characters`
 - [ ] Auth: Registrierung, Login, Logout, Session-Cookie, Argon2, Rate-Limit
-- [ ] Charaktererstellung: Name (eindeutig), Klasse, 5 Startpunkte je Attribut + 4 frei verteilbar
+- [ ] Charaktererstellung: Name (eindeutig), Klasse, 5 Startpunkte je Attribut + 4 frei verteilbar, 5 Skillpunkte (unverteilt)
 - [ ] `app/game/constants.py` mit allen Konstanten aus den Docs (auch wenn noch ungenutzt)
 - [ ] Frontend: SvelteKit, Routing, Login-/Register-Screen, Charaktererstellung, leerer „Hof“-Screen
 - [ ] PWA: Manifest, Icons, Service Worker mit App-Shell-Cache, Offline-Hinweis
@@ -196,3 +196,5 @@ Zwei Wochen Beta ohne Datenverlust. Mindestens 60 % der Tester schließen das On
 ## Offene Fragen
 
 *(hier während der Umsetzung ergänzen)*
+
+- **Überfälle auf Siedlungen** (vor M5 ausarbeiten): Ablauf und Auflösung (Duell? eigene Probe?), Stufenrange, Wirkung von Palisade und Wachturm in Zahlen, Chance auf Brandschaden.

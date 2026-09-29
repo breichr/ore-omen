@@ -2,7 +2,7 @@
 
 Wert von **0 bis 100** pro Charakter. Kein reiner Malus, sondern ein zweiter Fortschrittsweg: mehr Macht, aber ein härteres und einsameres Spiel.
 
-Intern als Ganzzahl in Zehnteln speichern (0–1000), weil manche Quellen 0,5 geben.
+Intern als Ganzzahl in Zehnteln speichern (0–1000), weil manche Quellen 0,5 geben. Damit ist auch die Kapellenformel `1 + Stufe ÷ 2` exakt (Stufe 3 → −2,5 = −25 Zehntel).
 
 ## Stufen
 
@@ -11,7 +11,7 @@ Intern als Ganzzahl in Zehnteln speichern (0–1000), weil manche Quellen 0,5 ge
 | 0–24 | Rein | `pure` | – | – |
 | 25–49 | Gezeichnet | `marked` | *Erzsinn*: +25 % Schwarzerz beim Schürfen | Händler +10 %, Kapellen-Heilung halbiert |
 | 50–74 | Verdorben | `tainted` | *Dunkler Blick* (Duell, siehe `04-duelle.md`) | Keine Heilung in Kirchen, Prediger +20 % Schaden gegen dich, nächtliche Kreaturenangriffe auf die Siedlung, Orden-Ruf max. Neutral |
-| 75–99 | Besessen | `possessed` | *Schattenschritt*: erster Schuss gegen dich −20 % | Orden-Kopfgeld läuft, Charisma −3, tägliche Flüster-Ereignisse |
+| 75–99 | Besessen | `possessed` | *Schattenschritt*: erster Schuss gegen dich −20 % (siehe `04-duelle.md`) | Orden-Kopfgeld läuft, Charisma −3, tägliche Flüster-Ereignisse |
 | 100 | Verloren | `lost` | – | „Die Tiefe ruft“ |
 
 Kräfte gelten kumulativ (ein Besessener hat Erzsinn, Dunklen Blick und Schattenschritt).

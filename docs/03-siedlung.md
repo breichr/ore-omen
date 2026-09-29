@@ -21,7 +21,7 @@ Geschützt(n)  = 10 % + 4 % × n                                            Ante
 Reparatur     = 25 % der Kosten der aktuellen Stufe
 ```
 
-Rundung: Kosten und Produktion auf ganze Zahlen (kaufmännisch), Bauzeit auf ganze Sekunden.
+Rundung: Kosten und Produktion auf ganze Zahlen, Bauzeit auf ganze Sekunden, jeweils ROUND_HALF_UP (siehe `08-technik.md`, „Rundung“).
 
 **Referenzwerte für Tests** – Holzfällerplatz (Basis 50 Holz, 20 $, 5 min, 20 Holz/h), ohne Haupthaus-Bonus:
 
@@ -33,7 +33,13 @@ Rundung: Kosten und Produktion auf ganze Zahlen (kaufmännisch), Bauzeit auf gan
 | 7 | 839 | 56 min 57 s | 248 |
 | 10 | 3.436 | 3 h 12 min | 472 |
 
-Lager bei Stufe 10: 10.604 pro Ressource. Designziel: Lager fasst etwa 12 Stunden Produktion.
+Lager bei Stufe 10: 10.604 pro Ressource. Designziel: Ab mittleren Stufen fasst das Lager etwa einen Tag Produktion, sodass einmal täglich reinschauen reicht.
+
+## Startzustand
+
+- Die Parzelle startet **ohne Gebäude**. Das erste Gebäude ist das Haupthaus Stufe 1 („Zelt“).
+- Startressourcen: **200 Holz, 50 Eisen, 150 $**.
+- Lager ohne Lagerschuppen: **500 pro Ressource**, geschützter Anteil **10 %**. Mit Lagerschuppen gelten `Lager(n)` und `Geschützt(n)` mit n = Stufe des Lagerschuppens.
 
 ## Gebäude
 
@@ -42,6 +48,8 @@ Lager bei Stufe 10: 10.604 pro Ressource. Designziel: Lager fasst etwa 12 Stunde
 |---|---|---|---|---|
 | Haupthaus | `main_house` | 100 Holz, 50 Eisen, 100 $ | 20 min | Max-Stufe aller anderen Gebäude = Haupthaus-Stufe; −3 % Bauzeit pro Stufe; schaltet Bauplätze frei |
 | Lagerschuppen | `storehouse` | 80 Holz, 20 Eisen | 8 min | Lagerkapazität, geschützter Anteil |
+
+Anzeigename des Haupthauses je Stufe: 1 **Zelt** · 2–3 **Hütte** · 4–6 **Blockhaus** · 7–9 **Ranchhaus** · 10 **Herrenhaus**.
 
 ### Produktion
 | Gebäude | Code | Basiskosten | Basiszeit | Produktion (Basisrate/h) |

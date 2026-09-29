@@ -29,12 +29,14 @@ Jeder direkte Rufgewinn bei Fraktion X verursacht automatisch Verlust bei andere
 
 Beispiel: +40 Aschenbande → −20 Kompanie, −20 Orden, −4 Hüter.
 
+Rundung: ROUND_HALF_UP auf den Betrag (siehe `08-technik.md`, „Rundung“). Beispiel: +15 Aschenbande → −8 Kompanie, −8 Orden, −2 Hüter (−1,5 → −2).
+
 Aufträge geben nur den direkten Ruf an, die Engine berechnet die Nebenwirkungen.
 
 ## Treueschwur
 
-- Ab *Vertraut* bei Kompanie **oder** Aschenbande muss sich der Spieler festlegen, bevor er dort weiter aufsteigen kann.
-- Der Schwur sperrt den Ehrenrang der Gegenseite.
+- Ruf bei Kompanie **und** Aschenbande ist bei **799** gedeckelt, solange kein Schwur geleistet ist. Ab *Vertraut* (800) muss sich der Spieler also festlegen.
+- Wer einer der beiden Fraktionen geschworen hat, ist bei der Gegenseite ebenfalls bei **799** gedeckelt (damit ist deren Ehrenrang gesperrt).
 - Wechsel möglich, kostet 50 % des aktuellen Rufs bei der verlassenen Fraktion.
 
 ## Die Kompanie

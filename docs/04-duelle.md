@@ -2,7 +2,7 @@
 
 Duelle sind **asynchron**: Der Angreifer legt seine Taktik fest, der Verteidiger kämpft mit seiner hinterlegten Standardtaktik. Der Server berechnet das Duell sofort, beide erhalten ein Textprotokoll.
 
-Die Referenzimplementierung ist `tools/duel_sim.py` (Stand v4). Alle Werte hier sind per Simulation mit je 5.000–10.000 Duellen geprüft.
+Die Referenzimplementierung ist `tools/duel_sim.py` (Stand v5: v4 + Schattenschritt; die Balancing-Tabelle ist unverändert, weil sie ohne Verderbnis läuft). Alle Werte hier sind per Simulation mit je 5.000–10.000 Duellen geprüft.
 
 ## Werte
 
@@ -38,6 +38,7 @@ Treffer % = 50
           − 40, wenn die Bewegung das Ziel kontert
           + 15, wenn Bein-Debuff aktiv
           − 25, wenn Staubwolke auf dem Schützen liegt
+          − 20 beim ersten Schuss gegen einen Besessenen (Schattenschritt)
           + Fähigkeits-/Kopfgeld-Modifikatoren
 begrenzt auf 10 … 90
 
@@ -82,6 +83,7 @@ P(Treffer) = p_konter × Treffer%(gekontert) + (1 − p_konter) × Treffer%(frei
 
 - **Schwarzerz-Kugeln**: ×1,25 Schaden, +1 Verderbnis pro abgegebenem Schuss (Aschenfürst: +0,5)
 - **Dunkler Blick** (Verderbnis ≥ 50): einmal pro Duell garantiert die Bewegung lesen (wie Instinkt, aber sicher). Wird vor Instinkt geprüft.
+- **Schattenschritt** (Verderbnis ≥ 75): Der erste Schuss des Gegners gegen den Besessenen hat −20 % Trefferchance (bei Fächerschuss nur der erste der beiden Schüsse). Im Simulator abgebildet, im Spiel ab M5.
 
 ## Rahmenregeln
 
@@ -108,7 +110,11 @@ Weitere Kennzahlen:
 - +10 Vorsprung: Zielen 83 %, Reflexe 78 %, Zähigkeit 67 %, Nerven 53 %, Instinkt 51 %
 - Reine Ziel- oder Bewegungsstrategien liegen alle zwischen 44 % und 51 %
 
-**Zielkorridor**: Jede Klasse 45–55 % im Schnitt. Nach jeder Regeländerung `python tools/duel_sim.py alles` laufen lassen und diese Tabelle aktualisieren.
+**Zielkorridor**: Jede Klasse 45–55 % im Schnitt (Designziel). Nach jeder Regeländerung `python tools/duel_sim.py alles` laufen lassen und diese Tabelle aktualisieren.
+
+**CI-Test**: prüft **43–57 %**, weil 2.000 Duelle je Paar Stichprobenrauschen von etwa ±1–2 Prozentpunkten haben. Das Designziel bleibt 45–55 %.
+
+**Bekannter Grenzfall**: Der Kopfgeldjäger liegt mit 44,7 % knapp unter dem Designziel. Das ist gewollt, weil sein Bonus gegen Gesuchte (53–61 %) ihn ausgleicht. Beim nächsten Balancing-Durchgang beobachten.
 
 ## Protokoll (Darstellung)
 

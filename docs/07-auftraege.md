@@ -22,7 +22,7 @@ Jeder Schritt muss auf einen Smartphone-Bildschirm passen.
 ## Proben
 
 ```
-Erfolg, wenn W20 + Attribut + Skill ≥ Schwierigkeit
+Erfolg, wenn W20 + Attribut + Skillpunkte ≥ Schwierigkeit
 
 leicht 15 · mittel 22 · schwer 28 · tödlich 35
 ```
@@ -30,6 +30,7 @@ leicht 15 · mittel 22 · schwer 28 · tödlich 35
 - Die Erfolgschance steht an jeder Option: „Überreden – 65 %“
 - Misserfolg führt immer zu einem eigenen, schlechteren Ausgang, nie zu „nichts passiert“
 - Proben verwenden den Seed des Auftrags (wiederholbar, kein Neuladen-Exploit)
+- Proben laufen nur auf Attribute + einen Skill dieses Attributs (siehe `01-welt.md`), nie auf Duellwerte direkt. Im JSON: `"check": {"attribute": "intellect", "skill": "instinct", "difficulty": 15}`; `skill` ist optional
 
 ## Datenformat
 
@@ -103,7 +104,7 @@ Option-Bedingungen (optional): `requires` mit `class`, `min_corruption`, `max_co
 > Die Kiste ist schwerer, als sie sein sollte. Auf halber Strecke liegt ein Baumstamm quer über dem Weg. Zu sauber gefällt für einen Sturm.
 
 - Weiterfahren und kämpfen → Kampf gegen `bandit_1`; Sieg: +15 Kompanie, 60 $
-- Umweg durch den Wald (Verstand/Instinkt, leicht) → Erfolg: +15 Kompanie, 60 $ · Fehlschlag: +30 min, 54 $
+- Umweg durch den Wald (Verstand, leicht) → Erfolg: +15 Kompanie, 60 $ · Fehlschlag: +30 min, 54 $
 - Kiste öffnen → +50 $ extra; Probe Charisma mittel, bei Fehlschlag −20 Kompanie
 
 ### Kompanie – Fraktionsauftrag: Der stille Schacht · ab Geschätzt
@@ -143,7 +144,7 @@ Beim Schürfen in der Tiefen Ader 10 % Chance auf ein Fundstück. Bei Ada ablief
 ### Hüter – Fraktionsauftrag: Die Karte, die sich bewegt · ab Bekannt, 3 Tage
 > Ada gibt dir eine Karte der Tiefen Ader. „Schau sie dir jeden Abend an. Dann sag mir, was sich verändert hat.“
 
-An drei Abenden (ab 20:00 Ortszeit des Spielers) je eine Auswahl aus drei Veränderungen. Instinkt-Probe (leicht/mittel/schwer an Tag 1/2/3) markiert bei Erfolg die richtige Option.
+An drei Abenden (ab 20:00 Ortszeit des Spielers) je eine Auswahl aus drei Veränderungen. Verstand-Probe (leicht/mittel/schwer an Tag 1/2/3) markiert bei Erfolg die richtige Option.
 - 3/3 richtig → +50 Hüter, Freischaltung eines neuen Bereichs der Tiefen Ader
 - 1–2 richtig → +25 Hüter
 - Karte an die Kompanie verkaufen → +30 Kompanie, 250 $, −60 Hüter, `server_flag: blood_moon_stronger`
@@ -154,7 +155,7 @@ Führt in ca. 30 Minuten durch alle Grundsysteme. Muss vor Meilenstein M2 ausgea
 
 1. Ankunft, der Schaffner ist verschwunden → erste Entscheidung
 2. Erste Arbeit (15 min Timer, danach 1 min für neue Spieler)
-3. Zelt aufbauen → erstes Gebäude
+3. Zelt aufbauen → erstes Gebäude (Haupthaus Stufe 1)
 4. Nach dem Mann aus dem Abteil fragen → erste Probe
 5. Übungsduell gegen den Hilfssheriff → Duelltaktik kennenlernen
 6. Die erste Fraktion ruft → Rufsystem

@@ -32,7 +32,7 @@ Reisen zwischen Regionen kostet Zeit (Timer), Standard 15–60 min.
 
 ## Attribute
 
-Vier Attribute, Start je 5, pro Charakterstufe 2 frei verteilbare Punkte.
+Vier Attribute. Bei Charaktererstellung hat jedes Attribut **5**, dazu kommen **4 frei verteilbare Punkte**. Ab Stufe 2 gibt es **2 frei verteilbare Punkte pro Charakterstufe**.
 
 | Attribut | Wirkt auf |
 |---|---|
@@ -41,22 +41,35 @@ Vier Attribute, Start je 5, pro Charakterstufe 2 frei verteilbare Punkte.
 | **Verstand** | Instinkt, Handwerk, Kartenkunde |
 | **Charisma** | Nerven, Handel, Überreden, Ruf-Boni |
 
+## Skills
+
+Jedes Attribut hat drei Skills. **Die fünf Duellwerte sind Skills** (fett markiert).
+
+| Attribut | Skills |
+|---|---|
+| Stärke | **Zähigkeit**, Bauen, Tragen |
+| Geschick | **Zielen**, **Reflexe**, Fingerfertigkeit |
+| Verstand | **Instinkt**, Handwerk, Kartenkunde |
+| Charisma | **Nerven**, Handel, Überreden |
+
+- **5 Skillpunkte** bei Charaktererstellung, danach **3 pro Charakterstufe**.
+- Ein Skill darf höchstens **Charakterstufe + 2** Punkte haben.
+
 ## Duellwerte
 
-Werden aus Attributen plus Skillpunkten, Ausrüstung und Klassenboni berechnet. Details in `04-duelle.md`.
-
-| Duellwert | Basis-Attribut |
-|---|---|
-| Zielen | Geschick |
-| Reflexe | Geschick |
-| Zähigkeit | Stärke |
-| Nerven | Charisma |
-| Instinkt | Verstand |
-
-Formel für einen Duellwert (Vorschlag, im Balancing prüfen):
 ```
-Duellwert = floor(Attribut / 2) + Skillpunkte + Ausrüstungsbonus
+Duellwert = Skillpunkte + floor(Attribut / 2) + Ausrüstungsbonus
 ```
+
+Details zum Kampf in `04-duelle.md`. Der Simulator-Referenzwert 10 entspricht grob Charakterstufe 10. Da die Trefferformel nur Differenzen nutzt, bleibt die Balance bei anderen absoluten Werten erhalten. Durch `floor(Attribut / 2)` dominiert Geschick nicht, obwohl es zwei Duellwerte trägt.
+
+## Proben
+
+```
+Erfolg, wenn W20 + Attribut + Skillpunkte ≥ Schwierigkeit
+```
+
+Proben laufen immer auf ein Attribut und einen seiner Skills, nie direkt auf einen Duellwert. Schwierigkeiten in `07-auftraege.md`.
 
 ## Klassen
 
