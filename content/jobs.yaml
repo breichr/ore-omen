@@ -1,0 +1,29 @@
+# Arbeiten (docs/07-auftraege.md, "Arbeiten")
+# yield: Basisertrag bei Stufe 1 (Ressourcen-Codes und "dollars"), steigt +10 % pro Stufe
+# xp: wird nicht skaliert
+
+jobs:
+  chop_wood:
+    name: Holz hacken
+    description: Am Waldrand liegen Stämme, die niemand haben will. Die Axt ist stumpf.
+    minutes: 15
+    yield: { wood: 25 }
+    xp: 10
+  drive_cattle:
+    name: Vieh treiben
+    description: Zwanzig Rinder von der Weide zum Pferch. Eines schaut dir die ganze Zeit nach.
+    minutes: 30
+    yield: { cattle: 20, dollars: 15 }
+    xp: 20
+  haul_crates:
+    name: Kisten am Bahnhof schleppen
+    description: Die Kompanie zahlt pro Kiste. Was drin ist, fragt man besser nicht.
+    minutes: 60
+    yield: { dollars: 50 }
+    xp: 35
+  sort_ore:
+    name: Erz sortieren
+    description: Taubes Gestein nach links, Eisen nach rechts. Das Schwarze nicht anfassen.
+    minutes: 120
+    yield: { iron: 40, dollars: 30 }
+    xp: 60

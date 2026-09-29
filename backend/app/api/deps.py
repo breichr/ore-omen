@@ -11,8 +11,8 @@ from sqlalchemy.orm import Session
 from app import clock
 from app.config import Settings, get_settings
 from app.db import get_db
-from app.models import User, UserSession
-from app.services import auth
+from app.models import Character, User, UserSession
+from app.services import auth, characters, timeline
 from app.services.ratelimit import limiter
 
 
@@ -70,3 +70,15 @@ def rate_limit(bucket: str, setting: str) -> Callable[..., None]:
             raise api_error(status.HTTP_429_TOO_MANY_REQUESTS, "rate_limited")
 
     return dependency
+
+
+def get_character(user: CurrentUserDep, db: DbDep, now: NowDep) -> Character:
+    """The player's character, locked and caught up on all due events."""
+    ch = characters.get_for_user(db, user)
+    if ch is None:
+        raise api_error(status.HTTP_409_CONFLICT, "no_character")
+    ch = timeline.sync(db, ch.id, now)
+    return ch
+
+
+CharacterDep = Annotated[Character, Depends(get_character)]

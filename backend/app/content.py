@@ -84,3 +84,42 @@ def parse_buildings(data: dict) -> dict[str, BuildingDef]:
 def buildings() -> dict[str, BuildingDef]:
     with open(content_dir() / "buildings.yaml", encoding="utf-8") as f:
         return parse_buildings(yaml.safe_load(f))
+
+
+@dataclass(frozen=True)
+class JobDef:
+    code: str
+    name: str
+    description: str
+    minutes: int
+    yield_: dict[str, int]
+    xp: int
+
+    @property
+    def seconds(self) -> int:
+        return self.minutes * 60
+
+
+def parse_jobs(data: dict) -> dict[str, JobDef]:
+    result: dict[str, JobDef] = {}
+    for code, j in (data.get("jobs") or {}).items():
+        d = JobDef(
+            code=code,
+            name=j["name"],
+            description=j.get("description", ""),
+            minutes=int(j["minutes"]),
+            yield_=dict(j["yield"]),
+            xp=int(j["xp"]),
+        )
+        if d.minutes <= 0 or d.xp < 0:
+            raise ValueError(f"{code}: minutes must be positive, xp non-negative")
+        if not d.yield_ or not set(d.yield_) <= COST_KEYS or any(v <= 0 for v in d.yield_.values()):
+            raise ValueError(f"{code}: invalid yield {d.yield_}")
+        result[code] = d
+    return result
+
+
+@lru_cache
+def jobs() -> dict[str, JobDef]:
+    with open(content_dir() / "jobs.yaml", encoding="utf-8") as f:
+        return parse_jobs(yaml.safe_load(f))

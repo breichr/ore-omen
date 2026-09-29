@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from datetime import datetime
 
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -8,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.game import character as rules
 from app.models import Character, User
+from app.services import settlement
 
 
 class CharacterExists(Exception):
@@ -23,7 +25,12 @@ def get_for_user(db: Session, user: User) -> Character | None:
 
 
 def create(
-    db: Session, user: User, name: str, character_class: str, allocation: Mapping[str, int]
+    db: Session,
+    user: User,
+    name: str,
+    character_class: str,
+    allocation: Mapping[str, int],
+    now: datetime,
 ) -> Character:
     new = rules.create_character(name, character_class, allocation)
     if get_for_user(db, user) is not None:
@@ -55,4 +62,5 @@ def create(
         if get_for_user(db, user) is not None:
             raise CharacterExists from e
         raise NameTaken from e
+    settlement.init_resources(db, ch.id, now)
     return ch

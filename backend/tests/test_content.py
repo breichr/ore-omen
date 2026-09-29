@@ -1,6 +1,6 @@
 import pytest
 
-from app.content import buildings, parse_buildings
+from app.content import buildings, jobs, parse_buildings, parse_jobs
 
 DOC_BUILDINGS = {
     "main_house",
@@ -79,3 +79,18 @@ def _minimal(**extra):
 def test_parser_rejects_invalid_content(bad):
     with pytest.raises(ValueError):
         parse_buildings(_minimal(**bad))
+
+
+def test_jobs_match_doc():
+    j = jobs()
+    assert {k: (v.minutes, v.yield_, v.xp) for k, v in j.items()} == {
+        "chop_wood": (15, {"wood": 25}, 10),
+        "drive_cattle": (30, {"cattle": 20, "dollars": 15}, 20),
+        "haul_crates": (60, {"dollars": 50}, 35),
+        "sort_ore": (120, {"iron": 40, "dollars": 30}, 60),
+    }
+
+
+def test_jobs_parser_rejects_invalid():
+    with pytest.raises(ValueError):
+        parse_jobs({"jobs": {"x": {"name": "X", "minutes": 1, "yield": {"gold": 1}, "xp": 1}}})
