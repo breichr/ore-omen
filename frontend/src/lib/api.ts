@@ -9,7 +9,11 @@ export type Character = {
 	character_class: string;
 	level: number;
 	xp: number;
+	xp_level_start: number;
+	xp_next_level: number;
 	attributes: Record<string, number>;
+	skills: Record<string, number>;
+	skill_cap: number;
 	unspent_attribute_points: number;
 	unspent_skill_points: number;
 	duel_values: Record<string, number>;
@@ -25,6 +29,59 @@ export type Me = {
 	user: { username: string; timezone: string };
 	character: Character | null;
 	server_time: string;
+};
+
+export type Settlement = {
+	as_of: string;
+	dollars: number;
+	capacity: number;
+	protected_share: number;
+	resources: { name: string; amount_milli: number; rate_per_hour: number }[];
+	buildings: {
+		code: string;
+		category: string;
+		name: string;
+		description: string;
+		level: number;
+		variant: string | null;
+		produces: Record<string, number>;
+		next: { level: number; cost: Record<string, number>; seconds: number } | null;
+		can_build: boolean;
+		reason: string | null;
+	}[];
+	queue: {
+		id: number;
+		type: string;
+		target_level: number;
+		started_at: string;
+		finishes_at: string;
+	}[];
+	queue_slots: number;
+	lost: Record<string, number>;
+};
+
+export type JobActivity = {
+	id: number;
+	job: string;
+	started_at: string;
+	finishes_at: string;
+	status: string;
+	result: { yield?: Record<string, number>; lost?: Record<string, number>; xp?: number };
+};
+
+export type Jobs = {
+	as_of: string;
+	current: JobActivity | null;
+	last: JobActivity | null;
+	jobs: {
+		code: string;
+		name: string;
+		description: string;
+		seconds: number;
+		yield: Record<string, number>;
+		xp: number;
+		overflow: Record<string, number>;
+	}[];
 };
 
 export class ApiError extends Error {

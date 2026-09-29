@@ -43,6 +43,7 @@ class BuildingOut(BaseModel):
     name: str
     description: str
     level: int
+    variant: str | None  # main house: tent, hut, log_house, ranch_house, manor
     produces: dict[str, int]  # per hour at the current level
     next: NextLevel | None
     can_build: bool
@@ -139,6 +140,7 @@ def settlement_view(db: Session, ch: Character, now: datetime) -> SettlementOut:
                 name=d.name,
                 description=d.description,
                 level=level,
+                variant=bf.main_house_name(level) if code == "main_house" and level else None,
                 produces=produces,
                 next=nxt,
                 can_build=reason is None,

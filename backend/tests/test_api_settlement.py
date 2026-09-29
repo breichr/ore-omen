@@ -79,6 +79,7 @@ def test_build_tent_pays_and_completes_on_time(player, clock):
     assert building(finish(player, clock, 1199), "main_house")["level"] == 0
     v = finish(player, clock, 1)
     assert building(v, "main_house")["level"] == 1
+    assert building(v, "main_house")["variant"] == "tent"
     assert v["queue"] == []
 
 
