@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { api, ApiError, type Character } from '$lib/api';
+	import Nav from '$lib/Nav.svelte';
 	import Offline from '$lib/Offline.svelte';
 	import { ATTRIBUTES, SKILLS_BY_ATTRIBUTE } from '$lib/rules';
 	import { de, errorText } from '$lib/text/de';
@@ -53,7 +54,7 @@
 {#if data.offline || !ch}
 	<Offline />
 {:else}
-	<main>
+	<main class="with-nav">
 		<p><a href="/yard">{de.points.back}</a></p>
 		<h1>{de.points.title}</h1>
 		<p class="dim">
@@ -127,6 +128,7 @@
 			{/each}
 		</div>
 	</main>
+	<Nav />
 {/if}
 
 <style>

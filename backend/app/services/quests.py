@@ -315,10 +315,17 @@ def start(db: Session, ch: Character, quest_id: str, now: datetime) -> QuestInst
 
     task = q.get("task") or {}
     data: dict = {}
+    minutes = q["duration_min"]
     if "build" in task:
-        data["build"] = _pay_task_build(db, ch, task["build"], now)
+        code = task["build"]
+        built = settlement.levels(db, ch.id).get(code, 0) > 0
+        queued = code in {i.type for i in settlement.queue(db, ch.id)}
+        if built or queued:
+            minutes = 0  # the player built it already: the step is done right away
+        else:
+            data["build"] = _pay_task_build(db, ch, code, now)
 
-    finishes = now + timedelta(minutes=q["duration_min"])
+    finishes = now + timedelta(minutes=minutes)
     instance = QuestInstance(
         character_id=ch.id,
         quest_id=quest_id,
@@ -331,7 +338,7 @@ def start(db: Session, ch: Character, quest_id: str, now: datetime) -> QuestInst
     )
     db.add(instance)
     db.flush()
-    if q["duration_min"] == 0:
+    if minutes == 0:
         arrive(db, ch, instance, now)
     else:
         _start_activity(

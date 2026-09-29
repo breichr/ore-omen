@@ -84,6 +84,85 @@ export type Jobs = {
 	}[];
 };
 
+export type Activity = {
+	kind: 'job' | 'quest' | 'travel' | 'delay';
+	ref: string;
+	started_at: string;
+	finishes_at: string;
+};
+
+export type QuestSummary = {
+	id: string;
+	type: 'daily' | 'faction' | 'chain';
+	chain: string | null;
+	faction: string | null;
+	region: string;
+	duration_min: number;
+	title: string;
+	intro: string;
+	min_reputation: number | null;
+	min_tier: string | null;
+	available: boolean;
+	reason: string | null;
+};
+
+export type Quests = {
+	as_of: string;
+	region: string;
+	day: string;
+	next_reset: string;
+	activity: Activity | null;
+	open: { id: number; quest_id: string; title: string; state: string; finishes_at: string }[];
+	quests: QuestSummary[];
+	travel: { region: string; seconds: number | null; reason: string | null }[];
+};
+
+export type Applied = {
+	dollars?: number;
+	resources?: Record<string, number>;
+	lost?: Record<string, number>;
+	xp?: number;
+	levels_gained?: number;
+	corruption?: number;
+	reputation?: Record<string, number>;
+	items?: string[];
+	unlock?: string[];
+	built?: Record<string, number>;
+	delay_min?: number;
+	stored?: Record<string, unknown>;
+};
+
+export type QuestInstance = {
+	id: number;
+	quest_id: string;
+	title: string;
+	intro: string;
+	event: string | null;
+	state: 'traveling' | 'choice' | 'done';
+	started_at: string;
+	finishes_at: string;
+	options: {
+		index: number;
+		label: string;
+		chance: number | null;
+		check: { attribute: string; skill?: string; difficulty: number | string } | null;
+		combat: boolean;
+		blocked: string | null;
+	}[];
+	outcome: {
+		label?: string;
+		text: string;
+		success?: boolean | null;
+		check?: { roll: number; total: number; difficulty: number } | null;
+		applied: Applied;
+	} | null;
+};
+
+export type Factions = {
+	oath: string | null;
+	factions: { code: string; value: number; tier: string; cap: number; can_swear: boolean }[];
+};
+
 export class ApiError extends Error {
 	constructor(
 		public status: number,

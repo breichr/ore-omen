@@ -81,18 +81,18 @@ bevor du DB oder API anfasst. Zeit im Worker muss für Tests injizierbar sein.
 ## M2 – Aufträge & Ruf
 
 ### Aufgaben
-- [ ] `app/game/reputation.py`: Rufstufen, Beziehungsmatrix, Treueschwur, Deckel (Orden bei Verderbnis ≥ 50, Aschenbande-Voraussetzungen)
+- [x] `app/game/reputation.py`: Rufstufen, Beziehungsmatrix, Treueschwur, Deckel (Orden bei Verderbnis ≥ 50, Aschenbande-Voraussetzungen)
 - [x] Tests: Beispiel „+40 Aschenbande → −20/−20/−4“
-- [ ] `app/game/quests.py`: Proben (W20 + Attribut + Skill ≥ Schwierigkeit), Erfolgschance berechnen, Effekte anwenden
-- [ ] JSON-Schema für Aufträge, Validierung aller Dateien in `content/quests/` in der CI
-- [ ] Migration: `reputation`, `oaths`, `quest_instances`, `items`
-- [ ] Auftragsablauf: starten → Timer → Ereignis → Wahl → Ausgang, Seed pro Instanz
-- [ ] Tagesarbeiten: tägliches Würfeln um 04:00 (aus Spieltag + Charakter abgeleitet, kein eigenes Ereignis nötig)
+- [x] `app/game/quests.py`: Proben (W20 + Attribut + Skill ≥ Schwierigkeit), Erfolgschance berechnen, Effekte anwenden
+- [x] JSON-Schema für Aufträge, Validierung aller Dateien in `content/quests/` in der CI
+- [x] Migration: `reputation`, `oaths`, `quest_instances`, `items`
+- [x] Auftragsablauf: starten → Timer → Ereignis → Wahl → Ausgang, Seed pro Instanz
+- [x] Tagesarbeiten: tägliches Würfeln um 04:00 (aus Spieltag + Charakter abgeleitet, kein eigenes Ereignis nötig)
 - [ ] Inhalte: Onboarding „Der letzte Zug“ (vorher mit Projektinhaber ausformulieren), je Fraktion 3 Tagesarbeiten + 1 Fraktionsauftrag aus `07-auftraege.md`
-- [ ] Reisen zwischen Regionen als Timer
-- [ ] Frontend: Auftragsliste, Ereignis-Screen mit Optionen und Prozentanzeige, Fraktions-Screen mit Rufbalken
-- [ ] Hof: nur gebaute und baubare Gebäude zeigen, den Rest unter „Weitere Gebäude“ einklappen
-- [ ] Treueschwur-Button im Fraktions-Screen (ab Geschätzt)
+- [x] Reisen zwischen Regionen als Timer
+- [x] Frontend: Auftragsliste, Ereignis-Screen mit Optionen und Prozentanzeige, Fraktions-Screen mit Rufbalken
+- [x] Hof: nur gebaute und baubare Gebäude zeigen, den Rest unter „Weitere Gebäude“ einklappen
+- [x] Treueschwur-Button im Fraktions-Screen (ab Geschätzt)
 - [ ] Entwürfe der 8 fehlenden Tagesarbeiten vorlegen und nach Freigabe einbauen
 
 ### Abnahme

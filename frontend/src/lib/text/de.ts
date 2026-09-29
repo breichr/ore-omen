@@ -133,6 +133,7 @@ export const de = {
 		queueEmpty: 'Gerade wird nichts gebaut.',
 		slots: (used: number, total: number) => `${used}/${total} Bauplätze`,
 		buildingsTitle: 'Gebäude',
+		moreBuildings: (n: number) => `Weitere Gebäude (${n})`,
 		level: (n: number) => `Stufe ${n}`,
 		notBuilt: 'Noch nicht gebaut',
 		build: 'Bauen',
@@ -251,7 +252,127 @@ export const de = {
 	} as Record<string, { name: string; hint: string }>,
 
 	regions: {
-		hollow_creek: 'Hollow Creek'
+		hollow_creek: 'Hollow Creek',
+		pine_slope: 'Kiefernhang',
+		deep_vein: 'Die Tiefe Ader',
+		salt_flats: 'Salzebene',
+		silent_mission: 'Stille Mission',
+		the_gorge: 'Die Schlucht'
+	} as Record<string, string>,
+
+	nav: {
+		yard: 'Hof',
+		quests: 'Aufträge',
+		factions: 'Fraktionen',
+		character: 'Charakter'
+	},
+
+	factions: {
+		company: 'Die Kompanie',
+		order: 'Der Orden vom Letzten Licht',
+		ash_gang: 'Die Aschenbande',
+		keepers: 'Die Hüter der Schlucht'
+	} as Record<string, string>,
+
+	factionShort: {
+		company: 'Kompanie',
+		order: 'Orden',
+		ash_gang: 'Aschenbande',
+		keepers: 'Hüter'
+	} as Record<string, string>,
+
+	tiers: {
+		hated: 'Verhasst',
+		hostile: 'Feindselig',
+		neutral: 'Neutral',
+		known: 'Bekannt',
+		respected: 'Geschätzt',
+		trusted: 'Vertraut',
+		honored: 'Ehrenrang'
+	} as Record<string, string>,
+
+	factionScreen: {
+		title: 'Fraktionen',
+		intro: 'Ruf bei einer Fraktion kostet Ruf bei anderen.',
+		cap: (n: number) => `Deckel: ${n}`,
+		oath: 'Treue schwören',
+		oathConfirm: (name: string) =>
+			`${name} die Treue schwören? Ein späterer Wechsel kostet die Hälfte deines Rufs dort.`,
+		sworn: 'Du hast geschworen.',
+		oathHint: 'Kompanie oder Aschenbande: Über 799 kommst du nur mit einem Treueschwur.'
+	},
+
+	questScreen: {
+		title: 'Aufträge',
+		here: (region: string) => `Du bist in ${region}.`,
+		busy: 'Du bist beschäftigt.',
+		activity: {
+			job: 'Arbeit',
+			quest: 'Unterwegs',
+			travel: 'Reise',
+			delay: 'Aufgehalten'
+		} as Record<string, string>,
+		open: 'Offen',
+		openChoice: 'Wartet auf deine Entscheidung',
+		openTraveling: 'Unterwegs',
+		onboarding: 'Der letzte Zug',
+		dailies: 'Tagesarbeiten',
+		dailiesReset: (time: string) => `Neue Tagesarbeiten um ${time} Uhr.`,
+		factionQuests: 'Fraktionsaufträge',
+		none: 'Gerade nichts.',
+		start: 'Aufbrechen',
+		duration: (text: string) => `Dauer ${text}`,
+		instant: 'sofort',
+		travelTitle: 'Reisen',
+		travelTo: (region: string) => `Nach ${region}`,
+		travel: 'Reisen',
+		fromRep: (tier: string) => `ab ${tier}`,
+		onboardingHint: 'Der letzte Zug wartet noch auf dich.',
+		reasons: {
+			wrong_region: 'Anderswo',
+			busy: 'Du bist beschäftigt',
+			done_today: 'Heute erledigt',
+			in_progress: 'Läuft',
+			reputation_too_low: 'Ruf zu niedrig',
+			gorge_closed: 'Erst ab Hüter „Bekannt“'
+		} as Record<string, string>
+	},
+
+	event: {
+		back: 'Zu den Aufträgen',
+		traveling: 'Unterwegs',
+		arrived: 'Angekommen.',
+		chance: (n: number) => `${n} %`,
+		combat: 'Kampf',
+		combatNote: 'Kämpfe kommen mit dem Duellsystem. Bis dahin gehen sie verloren.',
+		check: (roll: number, total: number, difficulty: number) =>
+			`W20: ${roll} → ${total} gegen ${difficulty}`,
+		success: 'Gelungen',
+		failure: 'Misslungen',
+		result: 'Ergebnis',
+		blocked: {
+			requires_item: 'Dir fehlt etwas',
+			requires_dollars: 'Zu wenig Geld',
+			requires_class: 'Nicht deine Klasse',
+			requires_reputation: 'Ruf zu niedrig',
+			requires_corruption: 'Nicht für dich'
+		} as Record<string, string>,
+		applied: {
+			xp: (n: number) => `+${n} XP`,
+			level: (n: number) => (n === 1 ? 'Neue Stufe!' : `${n} neue Stufen!`),
+			corruption: (n: number) => `Verderbnis ${n > 0 ? '+' : ''}${n}`,
+			item: (name: string) => `Erhalten: ${name}`,
+			unlock: 'Etwas Neues ist freigeschaltet.',
+			built: (name: string, level: number) => `${name} Stufe ${level}`,
+			delay: (n: number) => `${n} min aufgehalten`,
+			combat: 'Kampf verloren',
+			stored: 'Die Folgen zeigen sich später.'
+		}
+	},
+
+	items: {
+		strange_coat: 'Fremder Mantel',
+		bell_shard: 'Glockensplitter'
 	} as Record<string, string>,
 
 	errors: {
@@ -279,6 +400,25 @@ export const de = {
 		not_enough_skill_points: 'So viele Skillpunkte hast du nicht.',
 		skill_cap: 'Ein Skill darf höchstens Stufe + 2 Punkte haben.',
 		unknown_skill: 'Unbekannter Skill.',
+		busy: 'Du bist gerade mit etwas anderem beschäftigt.',
+		unknown_quest: 'Diesen Auftrag gibt es nicht.',
+		not_available: 'Dieser Auftrag ist gerade nicht verfügbar.',
+		wrong_region: 'Dafür musst du erst dorthin reisen.',
+		done_today: 'Heute schon erledigt.',
+		in_progress: 'Der Auftrag läuft schon.',
+		reputation_too_low: 'Dein Ruf reicht dafür nicht.',
+		no_choice_pending: 'Hier ist schon entschieden.',
+		unknown_option: 'Diese Möglichkeit gibt es nicht.',
+		requires_item: 'Dir fehlt etwas dafür.',
+		requires_dollars: 'Dafür fehlt dir Geld.',
+		requires_class: 'Das kann nur eine andere Klasse.',
+		requires_reputation: 'Dein Ruf reicht dafür nicht.',
+		requires_corruption: 'Das steht dir nicht offen.',
+		unknown_region: 'Diesen Ort gibt es nicht.',
+		already_there: 'Da bist du schon.',
+		gorge_closed: 'Die Schlucht lässt dich erst ab Hüter „Bekannt“ durch.',
+		no_oath_faction: 'Schwören kann man nur der Kompanie oder der Aschenbande.',
+		already_sworn: 'Du hast schon geschworen.',
 		invalid_recovery: 'Benutzername oder Notfallschlüssel stimmt nicht.',
 		rate_limited: 'Zu viele Versuche. Warte eine Minute.',
 		character_exists: 'Du hast bereits einen Charakter.',

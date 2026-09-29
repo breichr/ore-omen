@@ -40,6 +40,11 @@ main {
 	padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
 }
 
+/* Room for the fixed bottom navigation */
+main.with-nav {
+	padding-bottom: calc(80px + env(safe-area-inset-bottom));
+}
+
 h1,
 h2 {
 	font-family: var(--font-story);

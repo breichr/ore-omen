@@ -151,7 +151,8 @@ def test_combat_is_lost_until_m3_and_delay_blocks(player, clock, db_sessionmaker
 
 def test_faction_quest_needs_reputation(player, db_sessionmaker, clock):
     sql(db_sessionmaker, "UPDATE characters SET region = 'pine_slope'")
-    assert quest(quests(player), "orden_glocke")["reason"] == "reputation_too_low"
+    glocke = quest(quests(player), "orden_glocke")
+    assert (glocke["reason"], glocke["min_tier"]) == ("reputation_too_low", "known")
     sql(db_sessionmaker, "INSERT INTO reputation VALUES (1, 'order', 200)")
     assert quest(quests(player), "orden_glocke")["available"]
     inst = start(player, "orden_glocke").json()
@@ -190,3 +191,19 @@ def test_oath(player, db_sessionmaker):
     r = player.post("/factions/ash_gang/oath").json()  # switching costs 50 % at the company
     assert r["oath"] == "ash_gang"
     assert next(x for x in r["factions"] if x["code"] == "company")["value"] == 350
+
+
+def test_roof_step_completes_if_tent_already_built(player, clock, db_sessionmaker):
+    for qid in ("onboarding_arrival", "onboarding_work"):
+        sql(
+            db_sessionmaker,
+            "INSERT INTO quest_instances (character_id, quest_id, seed, state, day, data, "
+            "started_at, finishes_at) "
+            "VALUES (1, :q, 1, 'done', '2026-01-01', '{}', now(), now())",
+            q=qid,
+        )
+    player.post("/settlement/build", json={"type": "main_house"})  # built by hand
+    inst = start(player, "onboarding_roof").json()
+    assert inst["state"] == "done"
+    assert player.get("/me").json()["character"]["dollars"] == 50  # paid only once
+    assert quest(quests(player), "onboarding_stranger")["available"]

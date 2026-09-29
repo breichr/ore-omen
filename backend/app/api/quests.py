@@ -44,6 +44,7 @@ class QuestOut(BaseModel):
     title: str
     intro: str
     min_reputation: int | None
+    min_tier: str | None  # tier code of min_reputation
     available: bool
     reason: str | None
 
@@ -139,6 +140,7 @@ def quests_view(db: Session, ch: Character, now: datetime) -> QuestsOut:
             title=s.quest["title"],
             intro=s.quest["intro"],
             min_reputation=s.quest.get("min_reputation"),
+            min_tier=rep.tier(s.quest["min_reputation"]) if "min_reputation" in s.quest else None,
             available=s.available,
             reason=s.reason,
         )

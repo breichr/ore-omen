@@ -5,6 +5,7 @@
 	import { clock, useClock } from '$lib/clock.svelte';
 	import { formatAmounts } from '$lib/format';
 	import InstallPrompt from '$lib/InstallPrompt.svelte';
+	import Nav from '$lib/Nav.svelte';
 	import Offline from '$lib/Offline.svelte';
 	import { de, errorText } from '$lib/text/de';
 	import { extrapolateMilli, formatCountdown, formatDuration, serverOffset } from '$lib/time';
@@ -58,9 +59,20 @@
 		}
 	});
 
+	// Built, buildable or under construction first; the rest folds away (decision M2)
+	const inQueue = $derived(new Set((s?.queue ?? []).map((q) => q.type)));
+	const relevant = (b: NonNullable<typeof s>['buildings'][number]) =>
+		b.level > 0 || b.can_build || inQueue.has(b.code);
+	const more = $derived((s?.buildings ?? []).filter((b) => !relevant(b)));
+	const onboardingOpen = $derived(
+		!!data.quests &&
+			(data.quests.quests.some((x) => x.chain === 'onboarding') ||
+				data.quests.open.some((o) => o.quest_id.startsWith('onboarding_')))
+	);
+
 	const categories = $derived.by(() => {
 		const groups = new Map<string, NonNullable<typeof s>['buildings']>();
-		for (const b of s?.buildings ?? []) {
+		for (const b of (s?.buildings ?? []).filter(relevant)) {
 			if (!groups.has(b.category)) groups.set(b.category, []);
 			groups.get(b.category)!.push(b);
 		}
@@ -104,10 +116,54 @@
 	);
 </script>
 
+{#snippet buildingCard(b: NonNullable<typeof s>['buildings'][number])}
+	<div class="card building" class:built={b.level > 0}>
+		<div class="row">
+			<div>
+				<div class="strong">
+					{b.name}{#if b.variant}
+						· {de.mainHouse[b.variant]}{/if}
+				</div>
+				<div class="dim small">
+					{b.level ? de.settlement.level(b.level) : de.settlement.notBuilt}
+					{#if Object.keys(b.produces).length}
+						· {Object.entries(b.produces)
+							.map(([r, n]) => `${de.resources[r]} ${de.settlement.perHour(n)}`)
+							.join(', ')}
+					{/if}
+				</div>
+			</div>
+			{#if b.next}
+				<button
+					class="small-btn"
+					disabled={busy || !b.can_build}
+					onclick={() => act('/settlement/build', { type: b.code })}
+				>
+					{b.level ? de.settlement.upgrade(b.next.level) : de.settlement.build}
+				</button>
+			{/if}
+		</div>
+		<p class="desc">{b.description}</p>
+		{#if b.next}
+			<p class="small">
+				<span class="dim">{de.settlement.cost}:</span>
+				{formatAmounts(b.next.cost)} ·
+				<span class="dim">{de.settlement.duration}:</span>
+				{formatDuration(b.next.seconds)}
+			</p>
+			{#if b.reason && b.reason !== 'already_building'}
+				<p class="dim small">{de.reasons[b.reason] ?? b.reason}</p>
+			{/if}
+		{:else}
+			<p class="dim small">{de.settlement.maxed}</p>
+		{/if}
+	</div>
+{/snippet}
+
 {#if data.offline || !ch || !s || !jobs}
 	<Offline />
 {:else}
-	<main>
+	<main class="with-nav">
 		<header class="card who">
 			<div class="who-row">
 				<div>
@@ -150,6 +206,10 @@
 			{/each}
 		</section>
 		<p class="dim small center">{de.settlement.storage(s.capacity)}</p>
+
+		{#if onboardingOpen}
+			<a class="card onboarding" href="/quests">{de.questScreen.onboardingHint} →</a>
+		{/if}
 
 		{#if error}<p class="error" role="alert">{error}</p>{/if}
 		{#if notice}<p class="notice" role="status">{notice}</p>{/if}
@@ -230,54 +290,24 @@
 		{#each categories as [category, list] (category)}
 			<h3>{de.categories[category] ?? category}</h3>
 			{#each list as b (b.code)}
-				<div class="card building" class:built={b.level > 0}>
-					<div class="row">
-						<div>
-							<div class="strong">
-								{b.name}{#if b.variant}
-									· {de.mainHouse[b.variant]}{/if}
-							</div>
-							<div class="dim small">
-								{b.level ? de.settlement.level(b.level) : de.settlement.notBuilt}
-								{#if Object.keys(b.produces).length}
-									· {Object.entries(b.produces)
-										.map(([r, n]) => `${de.resources[r]} ${de.settlement.perHour(n)}`)
-										.join(', ')}
-								{/if}
-							</div>
-						</div>
-						{#if b.next}
-							<button
-								class="small-btn"
-								disabled={busy || !b.can_build}
-								onclick={() => act('/settlement/build', { type: b.code })}
-							>
-								{b.level ? de.settlement.upgrade(b.next.level) : de.settlement.build}
-							</button>
-						{/if}
-					</div>
-					<p class="desc">{b.description}</p>
-					{#if b.next}
-						<p class="small">
-							<span class="dim">{de.settlement.cost}:</span>
-							{formatAmounts(b.next.cost)} ·
-							<span class="dim">{de.settlement.duration}:</span>
-							{formatDuration(b.next.seconds)}
-						</p>
-						{#if b.reason && b.reason !== 'already_building'}
-							<p class="dim small">{de.reasons[b.reason] ?? b.reason}</p>
-						{/if}
-					{:else}
-						<p class="dim small">{de.settlement.maxed}</p>
-					{/if}
-				</div>
+				{@render buildingCard(b)}
 			{/each}
 		{/each}
+
+		{#if more.length}
+			<details class="more">
+				<summary>{de.settlement.moreBuildings(more.length)}</summary>
+				{#each more as b (b.code)}
+					{@render buildingCard(b)}
+				{/each}
+			</details>
+		{/if}
 
 		<InstallPrompt />
 
 		<a class="btn btn-ghost" href="/settings">{de.settings.link}</a>
 	</main>
+	<Nav />
 {/if}
 
 <style>
@@ -416,5 +446,22 @@
 	}
 	section h2 {
 		margin-top: 0;
+	}
+	.onboarding {
+		display: block;
+		margin-top: 1rem;
+		border-color: var(--accent);
+		color: var(--accent-strong);
+		font-weight: 600;
+		text-decoration: none;
+	}
+	.more {
+		margin-top: 1rem;
+	}
+	.more summary {
+		cursor: pointer;
+		color: var(--accent);
+		font-weight: 600;
+		padding: 0.6rem 0;
 	}
 </style>
