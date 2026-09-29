@@ -82,7 +82,7 @@ bevor du DB oder API anfasst. Zeit im Worker muss für Tests injizierbar sein.
 
 ### Aufgaben
 - [ ] `app/game/reputation.py`: Rufstufen, Beziehungsmatrix, Treueschwur, Deckel (Orden bei Verderbnis ≥ 50, Aschenbande-Voraussetzungen)
-- [ ] Tests: Beispiel „+40 Aschenbande → −20/−20/−4“
+- [x] Tests: Beispiel „+40 Aschenbande → −20/−20/−4“
 - [ ] `app/game/quests.py`: Proben (W20 + Attribut + Skill ≥ Schwierigkeit), Erfolgschance berechnen, Effekte anwenden
 - [ ] JSON-Schema für Aufträge, Validierung aller Dateien in `content/quests/` in der CI
 - [ ] Migration: `reputation`, `oaths`, `quest_instances`, `items`
