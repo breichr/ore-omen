@@ -85,6 +85,11 @@ def resolve(option: Mapping, index: int, seed: int, ctx: Context) -> Outcome:
     reason = blocked(option, ctx)
     if reason:
         raise RuleError(reason)
+    if "combat" in option:
+        # The duel engine comes with M3; until then every fight is lost (docs/07-auftraege.md)
+        branch = option["failure"]
+        effects = {**(branch.get("effects") or {}), "combat": option["combat"]}
+        return Outcome(branch.get("text", ""), effects, False)
     check = option.get("check")
     if not check:
         return Outcome(option.get("text", ""), dict(option.get("effects") or {}), None)

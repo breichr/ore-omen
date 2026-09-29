@@ -1,0 +1,55 @@
+{
+  "id": "onboarding_stranger",
+  "type": "chain",
+  "chain": "onboarding",
+  "after": "onboarding_roof",
+  "region": "hollow_creek",
+  "duration_min": 0,
+  "title": "Der Mann aus dem Abteil",
+  "intro": "Im Saloon fragst du nach dem Mann aus dem Abteil gegenüber.",
+  "event": "Der Wirt poliert ein Glas, das schon sauber ist. „Der letzte Zug fährt leer, Fremder. Seit drei Jahren.“",
+  "options": [
+    {
+      "label": "Nachhaken",
+      "check": {
+        "attribute": "charisma",
+        "skill": "persuasion",
+        "difficulty": "easy"
+      },
+      "success": {
+        "text": "Er beugt sich vor. „Frag die Kartenzeichnerin. Ada. Sie schreibt auf, was nicht sein kann.“",
+        "effects": {
+          "xp": 20
+        }
+      },
+      "failure": {
+        "text": "Er stellt das Glas ab. Beim Hinausgehen hörst du ihn murmeln: „…genau wie der Letzte.“",
+        "effects": {
+          "xp": 10
+        }
+      }
+    },
+    {
+      "label": "Einen Whiskey bestellen und zuhören",
+      "requires": {
+        "dollars": 5
+      },
+      "text": "Ein Bergmann am Tresen redet mit niemandem. „Schwarzes Zeug in Schacht sieben. Seitdem fährt der Zug nachts.“",
+      "effects": {
+        "dollars": -5,
+        "xp": 15
+      }
+    },
+    {
+      "label": "Den Mantel zeigen",
+      "requires": {
+        "item": "strange_coat"
+      },
+      "text": "Der Wirt wird blass. „Wo hast du den her?“ Er schenkt dir ein und will kein Geld.",
+      "effects": {
+        "dollars": 10,
+        "xp": 20
+      }
+    }
+  ]
+}

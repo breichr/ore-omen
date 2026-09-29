@@ -1,0 +1,49 @@
+{
+  "id": "onboarding_city",
+  "type": "chain",
+  "chain": "onboarding",
+  "after": "onboarding_stranger",
+  "region": "hollow_creek",
+  "duration_min": 0,
+  "title": "Die Stadt ruft",
+  "intro": "Am Morgen stecken Zettel an deinem Zelt.",
+  "event": "Ein Kompaniesiegel. Ein Kreuz aus Salz. Ein Rußfleck in Form einer Hand. Der vierte liegt unter einem Stein: eine Karte, mit Bleistift gezeichnet.",
+  "options": [
+    {
+      "label": "Zum Kontor der Kompanie",
+      "text": "Vale lässt ausrichten, er schätzt pünktliche Leute.",
+      "effects": {
+        "reputation": {
+          "company": 20
+        }
+      }
+    },
+    {
+      "label": "Zur Stillen Mission",
+      "text": "Schwester Agatha drückt dir Salz in die Hand. „Trag es bei dir.“",
+      "effects": {
+        "reputation": {
+          "order": 20
+        }
+      }
+    },
+    {
+      "label": "Hinter den Stall",
+      "text": "Hinter dem Stall lacht jemand. „Mae wird sich freuen.“",
+      "effects": {
+        "reputation": {
+          "ash_gang": 20
+        }
+      }
+    },
+    {
+      "label": "Der Karte folgen",
+      "text": "Die Karte zeigt deine Parzelle. Mit einem Kreuz darauf.",
+      "effects": {
+        "reputation": {
+          "keepers": 20
+        }
+      }
+    }
+  ]
+}

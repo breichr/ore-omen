@@ -1,0 +1,60 @@
+{
+  "id": "orden_glocke",
+  "type": "faction",
+  "faction": "order",
+  "min_reputation": 200,
+  "region": "pine_slope",
+  "duration_min": 45,
+  "title": "Die Glocke von San Isidro",
+  "intro": "Jede Nacht um drei läutet die Glocke der verlassenen Kapelle am Fluss. Es gibt dort seit zehn Jahren kein Seil mehr.",
+  "event": "Du steigst den Turm hinauf. Am Glockenschwengel hängt ein Mann in Priesterrobe und zieht, ohne hochzusehen.",
+  "options": [
+    {
+      "label": "Ihn segnen und erlösen",
+      "check": {
+        "attribute": "charisma",
+        "difficulty": 22
+      },
+      "success": {
+        "text": "Er lässt das Seil los, das nicht da ist. Dann ist er fort.",
+        "effects": {
+          "reputation": {
+            "order": 40
+          },
+          "items": [
+            "bell_shard"
+          ]
+        }
+      },
+      "failure": {
+        "text": "Er dreht den Kopf. Viel zu weit.",
+        "effects": {
+          "combat": "revenant_1"
+        }
+      }
+    },
+    {
+      "label": "Das Seil durchschneiden",
+      "text": "Die Glocke verstummt. Der Mann zerfällt zu Asche.",
+      "effects": {
+        "reputation": {
+          "order": 20
+        }
+      }
+    },
+    {
+      "label": "Die Glocke abnehmen und verkaufen",
+      "text": "Mae zahlt ohne Fragen. Auf dem Heimweg hörst du Schritte hinter dir.",
+      "effects": {
+        "dollars": 300,
+        "reputation": {
+          "order": -40
+        },
+        "corruption": 3,
+        "status": {
+          "whispers_days": 3
+        }
+      }
+    }
+  ]
+}

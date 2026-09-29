@@ -1,0 +1,9 @@
+# Gegenstände (docs/07-auftraege.md, Effekt "items"). In M2 reines Inventar ohne Wirkung.
+
+items:
+  strange_coat:
+    name: Fremder Mantel
+    description: Er ist trocken. Draußen regnet es seit Stunden.
+  bell_shard:
+    name: Glockensplitter
+    description: Ein Stück Bronze. Wenn man es ans Ohr hält, läutet es. Leise. Um drei.

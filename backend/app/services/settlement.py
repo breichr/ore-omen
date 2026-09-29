@@ -119,6 +119,15 @@ def running_job(db: Session, character_id: int) -> Activity | None:
     )
 
 
+def running_activity(db: Session, character_id: int) -> Activity | None:
+    """Job, quest, travel or delay: only one at a time (docs/07-auftraege.md)."""
+    return db.scalar(
+        select(Activity)
+        .where(Activity.character_id == character_id, Activity.status == "running")
+        .limit(1)
+    )
+
+
 def last_job(db: Session, character_id: int) -> Activity | None:
     return db.scalar(
         select(Activity)
@@ -233,6 +242,8 @@ def start_job(db: Session, ch: Character, code: str, now: datetime) -> Activity:
         raise RuleError("unknown_job")
     if running_job(db, ch.id) is not None:
         raise RuleError("job_running")
+    if running_activity(db, ch.id) is not None:
+        raise RuleError("busy")
     finishes = now + timedelta(seconds=job.seconds)
     event = schedule(db, "job_complete", finishes, now, ch.id, job=code)
     activity = Activity(

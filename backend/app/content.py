@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
 
+import jsonschema
 import yaml
 
 from app.game import constants as c
@@ -123,3 +125,84 @@ def parse_jobs(data: dict) -> dict[str, JobDef]:
 def jobs() -> dict[str, JobDef]:
     with open(content_dir() / "jobs.yaml", encoding="utf-8") as f:
         return parse_jobs(yaml.safe_load(f))
+
+
+@dataclass(frozen=True)
+class ItemDef:
+    code: str
+    name: str
+    description: str
+
+
+@lru_cache
+def items() -> dict[str, ItemDef]:
+    with open(content_dir() / "items.yaml", encoding="utf-8") as f:
+        raw = (yaml.safe_load(f) or {}).get("items") or {}
+    return {k: ItemDef(k, v["name"], v.get("description", "")) for k, v in raw.items()}
+
+
+def _quest_schema() -> dict:
+    with open(content_dir() / "quests" / "schema.json", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _effect_refs(effects: dict) -> list[tuple[str, str]]:
+    return [("item", i) for i in effects.get("items", [])]
+
+
+def validate_quests(quests: dict[str, dict]) -> None:
+    """Cross-checks beyond the JSON schema: references must exist and fit together."""
+    item_codes, job_codes, building_codes = set(items()), set(jobs()), set(buildings())
+    for qid, q in quests.items():
+        if "after" in q and q["after"] not in quests:
+            raise ValueError(f"{qid}: after '{q['after']}' does not exist")
+        task = q.get("task") or {}
+        if "job" in task and task["job"] not in job_codes:
+            raise ValueError(f"{qid}: unknown job {task['job']}")
+        if "build" in task and task["build"] not in building_codes:
+            raise ValueError(f"{qid}: unknown building {task['build']}")
+        if not (q.get("options") or task or "effects" in q or "text" in q):
+            raise ValueError(f"{qid}: needs options, a task or a direct outcome")
+        branches = [q]
+        for opt in q.get("options") or []:
+            branches += [opt, opt.get("success") or {}, opt.get("failure") or {}]
+            req = opt.get("requires") or {}
+            if "item" in req and req["item"] not in item_codes:
+                raise ValueError(f"{qid}: requires unknown item {req['item']}")
+            check = opt.get("check") or {}
+            if "skill" in check and check["skill"] not in c.SKILLS_BY_ATTRIBUTE[check["attribute"]]:
+                raise ValueError(
+                    f"{qid}: skill {check['skill']} does not belong to {check['attribute']}"
+                )
+        for b in branches:
+            for kind, ref in _effect_refs(b.get("effects") or {}):
+                if kind == "item" and ref not in item_codes:
+                    raise ValueError(f"{qid}: unknown item {ref}")
+            nxt = (b.get("effects") or {}).get("next")
+            if nxt and nxt not in quests:
+                raise ValueError(f"{qid}: next '{nxt}' does not exist")
+
+
+def load_quests(directory: Path) -> dict[str, dict]:
+    validator = jsonschema.Draft202012Validator(_quest_schema())
+    result: dict[str, dict] = {}
+    for path in sorted(directory.rglob("*.json")):
+        if path.name == "schema.json":
+            continue
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        errors = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
+        if errors:
+            e = errors[0]
+            where = "/".join(str(p) for p in e.path)
+            raise ValueError(f"{path.name}: {where}: {e.message}")
+        if data["id"] in result:
+            raise ValueError(f"{path.name}: duplicate id {data['id']}")
+        result[data["id"]] = data
+    validate_quests(result)
+    return result
+
+
+@lru_cache
+def quests() -> dict[str, dict]:
+    return load_quests(content_dir() / "quests")

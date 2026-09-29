@@ -84,3 +84,14 @@ def test_daily_offer_is_stable_per_day_and_varies():
     days = {tuple(daily_offer(pool, 1, date(2026, 1, d), "order")) for d in range(1, 15)}
     assert len(days) > 1
     assert daily_offer(["a", "b"], 1, date(2026, 1, 1), "order") == ["a", "b"]
+
+
+def test_combat_counts_as_lost_until_m3():
+    opt = {
+        "label": "Kämpfen",
+        "combat": "bandit_1",
+        "success": {"text": "gewonnen", "effects": {"dollars": 60}},
+        "failure": {"text": "verloren"},
+    }
+    o = resolve(opt, 0, 1, CTX)
+    assert (o.text, o.success, o.effects) == ("verloren", False, {"combat": "bandit_1"})

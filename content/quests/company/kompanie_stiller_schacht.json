@@ -1,0 +1,67 @@
+{
+  "id": "kompanie_stiller_schacht",
+  "type": "faction",
+  "faction": "company",
+  "min_reputation": 500,
+  "region": "deep_vein",
+  "duration_min": 60,
+  "title": "Der stille Schacht",
+  "intro": "Schacht 7 meldet sich seit zwei Tagen nicht. Vale will einen Bericht, „bevor die Zeitungen einen schreiben“.",
+  "event": "Unten findest du die Schicht: acht Männer, stehend, mit offenen Augen. Aus den Wänden wachsen schwarze Kristalle, wo gestern noch Fels war.",
+  "options": [
+    {
+      "label": "Bericht: Gasunfall",
+      "text": "Vale liest den Bericht zweimal und unterschreibt ohne Zögern.",
+      "effects": {
+        "reputation": {
+          "company": 40,
+          "order": -20
+        },
+        "dollars": 150
+      }
+    },
+    {
+      "label": "Die Wahrheit berichten",
+      "text": "Vale legt den Bericht in eine Schublade und schließt ab. Am Abend weiß es trotzdem die halbe Stadt.",
+      "effects": {
+        "reputation": {
+          "company": 10,
+          "order": 20,
+          "keepers": 20
+        },
+        "unlock": [
+          "kompanie_vales_gedaechtnis"
+        ]
+      }
+    },
+    {
+      "label": "Kristalle mitnehmen",
+      "text": "Sie sind warm. Auf dem Weg nach oben summt der Beutel.",
+      "effects": {
+        "resources": {
+          "black_ore": 8
+        },
+        "corruption": 6
+      }
+    },
+    {
+      "label": "Die Wände untersuchen",
+      "check": {
+        "attribute": "intellect",
+        "skill": "instinct",
+        "difficulty": "hard"
+      },
+      "success": {
+        "text": "Die Kristalle wachsen nicht zufällig. Sie zeigen nach unten, alle in dieselbe Richtung.",
+        "effects": {
+          "unlock": [
+            "hueter_hinweis_schacht7"
+          ]
+        }
+      },
+      "failure": {
+        "text": "Der Fels ist warm. Als du die Hand wegziehst, bleibt ein Abdruck zurück, der nicht deiner ist."
+      }
+    }
+  ]
+}

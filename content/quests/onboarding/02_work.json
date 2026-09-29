@@ -1,0 +1,14 @@
+{
+  "id": "onboarding_work",
+  "type": "chain",
+  "chain": "onboarding",
+  "after": "onboarding_arrival",
+  "region": "hollow_creek",
+  "duration_min": 1,
+  "title": "Erste Arbeit",
+  "intro": "Der Stationsvorsteher mustert dich. „Neu? Dann schlepp Kisten. Die Kompanie zahlt pünktlich. Meistens.“",
+  "task": {
+    "job": "haul_crates"
+  },
+  "text": "Die letzte Kiste ist leichter als die anderen. Du fragst nicht."
+}

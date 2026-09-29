@@ -54,8 +54,8 @@ def lock_character(db: Session, character_id: int, skip_locked: bool = False) ->
 
 def process_due(db: Session, character: Character, now: datetime) -> int:
     """Run all due events of a locked character, oldest first. Returns the count."""
-    # Imported for its side effect: registers the handlers
-    from app.services import settlement  # noqa: F401
+    # Imported for their side effect: they register the handlers
+    from app.services import quests, settlement  # noqa: F401
 
     events = db.scalars(
         select(ScheduledEvent)

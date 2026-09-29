@@ -44,7 +44,8 @@ def db_sessionmaker(engine):
         conn.execute(
             text(
                 "TRUNCATE users, sessions, characters, buildings, build_queue, resources, "
-                "character_skills, activities, scheduled_events RESTART IDENTITY CASCADE"
+                "character_skills, activities, scheduled_events, reputation, oaths, "
+                "quest_instances, items, character_flags RESTART IDENTITY CASCADE"
             )
         )
     return sessionmaker(bind=engine, expire_on_commit=False)

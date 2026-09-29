@@ -1,0 +1,16 @@
+{
+  "id": "bande_erz_salzsee",
+  "type": "daily",
+  "faction": "ash_gang",
+  "region": "salt_flats",
+  "duration_min": 120,
+  "title": "Erz über den Salzsee",
+  "intro": "Mae schiebt dir einen Sack über den Tisch. Er ist schwerer, als Erz sein sollte. „Zum Wagen am anderen Ufer. Nicht öffnen, nicht anhalten.“",
+  "text": "Am anderen Ufer wartet der Wagen. Der Kutscher zählt das Geld zweimal und lächelt nicht.",
+  "effects": {
+    "reputation": {
+      "ash_gang": 20
+    },
+    "dollars": 80
+  }
+}

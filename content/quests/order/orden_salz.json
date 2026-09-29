@@ -1,0 +1,18 @@
+{
+  "id": "orden_salz",
+  "type": "daily",
+  "faction": "order",
+  "region": "pine_slope",
+  "duration_min": 30,
+  "title": "Salz für die Höfe",
+  "intro": "Schwester Agatha füllt Säckchen mit grobem Salz. „Eines für jede Schwelle am Kiefernhang. Keine vergessen.“",
+  "text": "Auf der letzten Schwelle liegt schon Salz. Frisch. Niemand im Haus weiß, woher.",
+  "effects": {
+    "reputation": {
+      "order": 10
+    },
+    "resources": {
+      "salt": 1
+    }
+  }
+}

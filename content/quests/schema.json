@@ -1,0 +1,134 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://ore-omen/quest.schema.json",
+	"title": "Ore & Omen quest (docs/07-auftraege.md)",
+	"type": "object",
+	"required": ["id", "type", "region", "duration_min", "title", "intro"],
+	"additionalProperties": false,
+	"properties": {
+		"id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+		"type": { "enum": ["daily", "faction", "chain"] },
+		"chain": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+		"faction": { "$ref": "#/$defs/faction" },
+		"min_reputation": { "type": "integer", "minimum": -1000, "maximum": 1000 },
+		"after": { "type": "string" },
+		"region": { "$ref": "#/$defs/region" },
+		"duration_min": { "type": "integer", "minimum": 0, "maximum": 1440 },
+		"title": { "type": "string", "minLength": 1 },
+		"intro": { "type": "string", "minLength": 1 },
+		"event": { "type": "string", "minLength": 1 },
+		"task": {
+			"type": "object",
+			"additionalProperties": false,
+			"minProperties": 1,
+			"maxProperties": 1,
+			"properties": {
+				"job": { "type": "string" },
+				"build": { "type": "string" }
+			}
+		},
+		"options": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "$ref": "#/$defs/option" } },
+		"text": { "type": "string" },
+		"effects": { "$ref": "#/$defs/effects" }
+	},
+	"allOf": [
+		{ "if": { "properties": { "type": { "enum": ["daily", "faction"] } } }, "then": { "required": ["faction"] } },
+		{ "if": { "properties": { "type": { "const": "chain" } } }, "then": { "required": ["chain"] } },
+		{ "if": { "required": ["options"] }, "then": { "required": ["event"] } }
+	],
+	"$defs": {
+		"faction": { "enum": ["company", "order", "ash_gang", "keepers"] },
+		"region": {
+			"enum": ["hollow_creek", "pine_slope", "deep_vein", "salt_flats", "silent_mission", "the_gorge"]
+		},
+		"attribute": { "enum": ["strength", "dexterity", "intellect", "charisma"] },
+		"branch": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["text"],
+			"properties": { "text": { "type": "string" }, "effects": { "$ref": "#/$defs/effects" } }
+		},
+		"option": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["label"],
+			"properties": {
+				"label": { "type": "string", "minLength": 1 },
+				"requires": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"class": { "enum": ["gunslinger", "prospector", "quack", "preacher", "bounty_hunter"] },
+						"min_corruption": { "type": "number" },
+						"max_corruption": { "type": "number" },
+						"item": { "type": "string" },
+						"reputation": {
+							"type": "object",
+							"propertyNames": { "$ref": "#/$defs/faction" },
+							"additionalProperties": { "type": "integer" }
+						},
+						"dollars": { "type": "integer", "minimum": 1 }
+					}
+				},
+				"check": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["attribute", "difficulty"],
+					"properties": {
+						"attribute": { "$ref": "#/$defs/attribute" },
+						"skill": { "type": "string" },
+						"difficulty": {
+							"oneOf": [
+								{ "type": "integer", "minimum": 1 },
+								{ "enum": ["easy", "medium", "hard", "deadly"] }
+							]
+						}
+					}
+				},
+				"combat": { "type": "string", "description": "enemy id; until M3 counts as lost" },
+				"success": { "$ref": "#/$defs/branch" },
+				"failure": { "$ref": "#/$defs/branch" },
+				"text": { "type": "string" },
+				"effects": { "$ref": "#/$defs/effects" }
+			},
+			"oneOf": [
+				{ "required": ["check", "success", "failure"], "not": { "required": ["combat"] } },
+				{ "required": ["combat", "success", "failure"], "not": { "required": ["check"] } },
+				{ "required": ["text"], "not": { "anyOf": [{ "required": ["check"] }, { "required": ["combat"] }] } }
+			]
+		},
+		"effects": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"dollars": { "type": "integer" },
+				"resources": {
+					"type": "object",
+					"propertyNames": {
+						"enum": ["wood", "iron", "cattle", "whiskey", "silver", "salt", "black_ore"]
+					},
+					"additionalProperties": { "type": "integer" }
+				},
+				"xp": { "type": "integer", "minimum": 0 },
+				"reputation": {
+					"type": "object",
+					"propertyNames": { "$ref": "#/$defs/faction" },
+					"additionalProperties": { "type": "integer" }
+				},
+				"corruption": { "type": "number" },
+				"bounty": {
+					"type": "object",
+					"required": ["issuer", "amount"],
+					"properties": { "issuer": { "type": "string" }, "amount": { "type": "integer" } }
+				},
+				"items": { "type": "array", "items": { "type": "string" } },
+				"combat": { "type": "string" },
+				"status": { "type": "object" },
+				"unlock": { "type": "array", "items": { "type": "string" } },
+				"server_flag": { "type": "object" },
+				"next": { "type": "string" },
+				"delay_min": { "type": "integer", "minimum": 1, "maximum": 1440 }
+			}
+		}
+	}
+}

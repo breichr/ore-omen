@@ -1,0 +1,14 @@
+{
+  "id": "onboarding_roof",
+  "type": "chain",
+  "chain": "onboarding",
+  "after": "onboarding_work",
+  "region": "hollow_creek",
+  "duration_min": 1,
+  "title": "Ein Dach",
+  "intro": "Deine Parzelle ist ein Stück Erde mit einem Pflock. Nachts kommt der Wind von der Mine herunter und riecht nach nassem Eisen. Du brauchst ein Dach.",
+  "task": {
+    "build": "main_house"
+  },
+  "text": "Das Zelt steht. Es flattert, aber es hält."
+}

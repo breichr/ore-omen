@@ -94,3 +94,63 @@ def test_jobs_match_doc():
 def test_jobs_parser_rejects_invalid():
     with pytest.raises(ValueError):
         parse_jobs({"jobs": {"x": {"name": "X", "minutes": 1, "yield": {"gold": 1}, "xp": 1}}})
+
+
+def test_all_quest_files_are_valid():
+    """CI gate: every file in content/quests/ matches schema.json and cross-checks."""
+    from app.content import quests
+
+    q = quests()
+    assert {
+        "onboarding_arrival",
+        "onboarding_city",
+        "orden_glocke",
+        "kompanie_stiller_schacht",
+    } <= set(q)
+    assert q["onboarding_work"]["after"] == "onboarding_arrival"
+
+
+def test_quest_validation_rejects_bad_files(tmp_path):
+    import json as _json
+    import shutil
+
+    from app.content import content_dir, load_quests
+
+    shutil.copy(content_dir() / "quests" / "schema.json", tmp_path / "schema.json")
+    good = {
+        "id": "x",
+        "type": "daily",
+        "faction": "order",
+        "region": "pine_slope",
+        "duration_min": 5,
+        "title": "T",
+        "intro": "I",
+        "text": "t",
+        "effects": {"xp": 1},
+    }
+    (tmp_path / "x.json").write_text(_json.dumps(good))
+    assert "x" in load_quests(tmp_path)
+
+    bad_cases = [
+        {**good, "faction": "sheriff"},  # schema: enum
+        {**good, "type": "daily", "faction": None},
+        {**good, "effects": {"gold": 1}},  # unknown effect key
+        {**good, "after": "missing"},  # cross-check
+        {**good, "effects": {"items": ["unknown_item"]}},
+        {
+            **good,
+            "event": "E",
+            "options": [
+                {
+                    "label": "L",
+                    "check": {"attribute": "charisma", "skill": "aim", "difficulty": "easy"},
+                    "success": {"text": "s"},
+                    "failure": {"text": "f"},
+                }
+            ],
+        },
+    ]
+    for bad in bad_cases:
+        (tmp_path / "x.json").write_text(_json.dumps(bad))
+        with pytest.raises(ValueError):
+            load_quests(tmp_path)

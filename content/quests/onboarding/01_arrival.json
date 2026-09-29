@@ -1,0 +1,25 @@
+{
+  "id": "onboarding_arrival",
+  "type": "chain",
+  "chain": "onboarding",
+  "region": "hollow_creek",
+  "duration_min": 0,
+  "title": "Der letzte Zug",
+  "intro": "Der Zug hält mit einem Ruck. Draußen ein Bahnsteig aus rohen Brettern, darüber ein Schild: HOLLOW CREEK, frisch gestrichen über einem älteren Namen.",
+  "event": "Der Schaffner ist fort. Auf seinem Platz liegt deine Fahrkarte, entwertet. Du hast sie ihm nie gegeben. Im Abteil gegenüber hängt noch ein Mantel am Haken.",
+  "options": [
+    {
+      "label": "Den Mantel mitnehmen",
+      "text": "Er ist trocken. Draußen regnet es seit Stunden.",
+      "effects": {
+        "items": [
+          "strange_coat"
+        ]
+      }
+    },
+    {
+      "label": "Den Mantel hängen lassen",
+      "text": "An der Tür drehst du dich um. Der Haken ist leer."
+    }
+  ]
+}

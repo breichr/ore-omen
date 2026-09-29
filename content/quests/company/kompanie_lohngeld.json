@@ -1,0 +1,78 @@
+{
+  "id": "kompanie_lohngeld",
+  "type": "daily",
+  "faction": "company",
+  "region": "pine_slope",
+  "duration_min": 60,
+  "title": "Lohngeld nach Kiefernhang",
+  "intro": "Die Kiste ist schwerer, als sie sein sollte.",
+  "event": "Auf halber Strecke liegt ein Baumstamm quer über dem Weg. Zu sauber gefällt für einen Sturm.",
+  "options": [
+    {
+      "label": "Weiterfahren und kämpfen",
+      "combat": "bandit_1",
+      "success": {
+        "text": "Der Hinterhalt zerstreut sich. Die Kiste kommt an.",
+        "effects": {
+          "reputation": {
+            "company": 15
+          },
+          "dollars": 60
+        }
+      },
+      "failure": {
+        "text": "Du ziehst dich zurück. Die Kiste bleibt im Graben, die Männer im Wald."
+      }
+    },
+    {
+      "label": "Umweg durch den Wald",
+      "check": {
+        "attribute": "intellect",
+        "skill": "cartography",
+        "difficulty": "easy"
+      },
+      "success": {
+        "text": "Ein Wildpfad, den niemand bewacht. Du lieferst pünktlich.",
+        "effects": {
+          "reputation": {
+            "company": 15
+          },
+          "dollars": 60
+        }
+      },
+      "failure": {
+        "text": "Der Pfad führt im Kreis. Du kommst eine halbe Stunde zu spät, und der Zahlmeister zieht dir etwas ab.",
+        "effects": {
+          "dollars": 54,
+          "delay_min": 30
+        }
+      }
+    },
+    {
+      "label": "Die Kiste öffnen",
+      "check": {
+        "attribute": "charisma",
+        "skill": "persuasion",
+        "difficulty": "medium"
+      },
+      "success": {
+        "text": "Oben Lohntüten, unten ein Bündel Scheine ohne Namen. Du nimmst dir etwas davon und erklärst den Rest so gut, dass niemand nachzählt.",
+        "effects": {
+          "reputation": {
+            "company": 15
+          },
+          "dollars": 110
+        }
+      },
+      "failure": {
+        "text": "Du nimmst dir etwas. Der Zahlmeister zählt nach.",
+        "effects": {
+          "reputation": {
+            "company": -20
+          },
+          "dollars": 110
+        }
+      }
+    }
+  ]
+}
